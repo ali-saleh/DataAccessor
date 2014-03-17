@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="db.billingdb.dao.custom.OrderReportMapper">
+	<resultMap id="RM_1" type="db.billingdb.model.custom.OrderReport">
+
+
+		<result column="p_id" property="paymentId" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="fullname" property="userFullname" jdbcType="VARCHAR" />
+		<result column="c_time" property="paymentDate" jdbcType="TIMESTAMP" />
+		<result column="amount" property="amount" jdbcType="DOUBLE" />
+		<result column="invoices" property="invoices_string"></result>
+		<!-- <collection column="p_id" property="invoiceIds" -->
+		<!-- ofType="db.billingdb.model.custom.info.PaymentInvoiceItem" resultMap="pay_inv_map" -->
+		<!-- select="getInvoices" /> -->
+		<association property="chequeInfo" column="p_id"
+			select="getPaymentCheque" autoMapping="true" resultMap="cheque_map">
+		</association>
+	</resultMap>
+
+	<resultMap id="cheque_map" type="db.billingdb.model.custom.info.ChequeInfo">
+		<result column="chequeId" property="chequeId" jdbcType="INTEGER" />
+		<result column="bankName" property="bankName" jdbcType="VARCHAR" />
+		<result column="chequeDate" property="checqueDate" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<resultMap id="pay_inv_map"
+		type="db.billingdb.model.custom.info.PaymentInvoiceItem">
+		<result column="inv_id" property="invoiceId" jdbcType="INTEGER" />
+		<result column="inv_amount" property="invoiceAmount" jdbcType="DOUBLE" />
+	</resultMap>
+
+	<sql id="payment_columns">
+		p.id as p_id,
+		b.user_name as user_id,
+		cf.content as fullname,
+		p.create_datetime as c_time,
+		(p.amount
+		<if test="vatRate != 0">
+			* (1.0 - #{vatRate,jdbcType=DOUBLE})
+		</if>
+		)as amount,
+		GROUP_CONCAT(pi.invoice_id SEPARATOR ',') as invoices
+	</sql>
+
+	<sql id="main_tables">
+		payment p,
+		payment_invoice pi,
+		base_user b,
+		contact c,
+		contact_field cf
+	</sql>
+
+	<select id="getPayments" resultMap="RM_1"
+		parameterType="db.billingdb.model.custom.PaymentCondition">
+		select
+		<include refid="payment_columns" />
+		from
+		<include refid="main_tables" />
+		<where>
+			<trim prefix="(" suffix=")" prefixOverrides="and">
+				<if test="entityId != 0">
+					AND b.entity_id = #{entityId,jdbcType=INTEGER}
+				</if>
+				AND p.user_id = b.id
+				AND p.user_id = c.user_id
+				AND pi.payment_id =
+				p.id
+				AND cf.contact_id =
+				c.id
+				AND cf.type_id = 432 <!-- For user's full name -->
+				AND
+				<choose>
+					<when test="deleted">
+						p.deleted = 1
+					</when>
+					<otherwise>
+						p.deleted = 0
+					</otherwise>
+				</choose>
+				<if test="paymentMethod">
+					AND p.method_id = #{paymentMethod,jdbcType=INTEGER}
+				</if>
+				<if test="city != 0">
+					AND c.city = #{city,jdbcType=INTEGER}
+				</if>
+				<if test="userId != 0">
+					AND p.user_id = #{userId,jdbcType=INTEGER}
+				</if>
+				<if test="currencyId != 0">
+					AND p.currency_id = #{currencyId,jdbcType=INTEGER}
+				</if>
+				<if test="startDate != null">
+					AND p.create_datetime &gt;=
+					#{startDate,jdbcType=TIMESTAMP}
+				</if>
+				<if test="endDate != null">
+					AND p.create_datetime &lt;
+					#{endDate,jdbcType=TIMESTAMP}
+				</if>
+			</trim>
+		</where>
+		group by p_id
+	</select>
+
+	<select id="getChequePayments" resultMap="RM_1"
+		parameterType="db.billingdb.model.custom.PaymentCondition">
+		select
+		<include refid="payment_columns" />
+		from
+		<include refid="main_tables" />
+		<where>
+			<trim prefix="(" suffix=")" prefixOverrides="and">
+				<if test="entityId != 0">
+					AND b.entity_id = #{entityId,jdbcType=INTEGER}
+				</if>
+				AND p.user_id = b.id
+				AND p.user_id = c.user_id
+				AND cf.contact_id =
+				c.id
+				AND cf.type_id = 432 <!-- For user's full name -->
+				AND
+				<choose>
+					<when test="deleted">
+						p.deleted = 1
+					</when>
+					<otherwise>
+						p.deleted = 0
+					</otherwise>
+				</choose>
+				<if test="city != 0">
+					AND c.city = #{city,jdbcType=INTEGER}
+				</if>
+				<if test="userId != 0">
+					AND p.user_id = #{userId,jdbcType=INTEGER}
+				</if>
+				<if test="currencyId != 0">
+					AND p.currency_id = #{currencyId,jdbcType=INTEGER}
+				</if>
+				<if test="startDate != null">
+					AND p.create_datetime &gt;=
+					#{startDate,jdbcType=TIMESTAMP}
+				</if>
+				<if test="endDate != null">
+					AND p.create_datetime &lt;
+					#{endDate,jdbcType=TIMESTAMP}
+				</if>
+			</trim>
+		</where>
+	</select>
+
+	<select id="getPaymentCheque" resultMap="cheque_map"
+		parameterType="int">
+		SELECT pic.cheque_number as chequeId, pic.bank as
+		bankName, pic.cheque_date as chequeDate
+		FROM
+		payment_info_cheque pic
+		WHERE
+		pic.payment_id=#{p_id}
+	</select>
+
+</mapper>

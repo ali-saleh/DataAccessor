@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="db.billingdb.dao.custom.InvoiceReportMapper">
+	<resultMap id="BaseResultMap" type="db.billingdb.model.custom.InvoiceReport">
+		<result column="u_id" property="user_id" jdbcType="INTEGER" />
+		<result column="i_id" property="invoice_id" jdbcType="INTEGER" />
+		<result column="disply_name" property="disply_name" jdbcType="VARCHAR" />
+		<result column="c_time" property="create_datetime" jdbcType="TIMESTAMP" />
+		<result column="quantity" property="quantity" jdbcType="INTEGER" />
+		<result column="amount" property="balance" jdbcType="DOUBLE" />
+	</resultMap>
+
+	<sql id="report_columns">
+		c.user_id as u_id, i.id as i_id, cf.content as disply_name,
+		i.create_datetime
+		as c_time, il.quantity as quantity,
+		(il.amount
+		<if test="vatRate != 0.0">
+			* (1.0 - #{vatRate,jdbcType=DOUBLE})
+		</if>
+		)as
+		amount
+	</sql>
+	<sql id="columns_unclosed">
+		c.user_id as u_id, i.id as i_id, cf.content as disply_name,
+		i.create_datetime
+		as c_time, il.quantity as quantity,
+		il.amount as balance
+	</sql>
+
+	<sql id="main_table">
+		invoice_line il,
+		invoice i,
+		contact c,
+		base_user b,
+		contact_field cf
+	</sql>
+
+	<select id="getInvoicesByCondition" resultMap="BaseResultMap"
+		parameterType="db.billingdb.model.custom.InvoiceCondition">
+		select
+		<include refid="report_columns" />
+		from
+		<include refid="main_table" />
+		<where>
+			<trim prefix="(" suffix=")" prefixOverrides="and">
+				<if test="entityId != 0">
+					AND b.entity_id = #{entityId,jdbcType=INTEGER}
+				</if>
+				AND b.id = c.user_id
+				AND i.user_id = c.user_id AND
+				cf.contact_id =
+				c.id AND
+				il.invoice_id =
+				i.id AND
+				i.deleted = 0 AND i.is_review = 0 AND
+				cf.type_id = 432
+				<if test="userId != 0">
+					AND c.user_id = #{userId,jdbcType=INTEGER}
+				</if>
+				<if test="city != 0">
+					AND c.city = #{city,jdbcType=INTEGER}
+				</if>
+				<if test="itemId > 0">
+					and il.item_id = #{itemId,jdbcType=INTEGER}
+				</if>
+				<if test="startDate != null">
+					and i.create_datetime &gt;=
+					#{startDate,jdbcType=TIMESTAMP}
+				</if>
+				<if test="endDate != null">
+					and i.create_datetime &lt;
+					#{endDate,jdbcType=TIMESTAMP}
+				</if>
+			</trim>
+		</where>
+	</select>
+
+	<select id="getUnclosedInvoices" resultMap="BaseResultMap"
+		parameterType="db.billingdb.model.custom.InvoiceCondition">
+		select
+		<include refid="columns_unclosed" />
+		from
+		invoice i
+		LEFT JOIN contact c ON
+		<if test="city != 0">
+			and c.city = #{city,jdbcType=INTEGER}
+			AND
+		</if>
+		i.user_id = c.user_id
+		LEFT JOIN
+		contact_field cf ON cf.type_id = 432
+		AND
+		cf.contact_id = c.id
+		<where>
+			<trim prefix="(" suffix=")" prefixOverrides="and">
+				<if test="startDate != null">
+					and i.create_datetime &gt;
+					#{startDate,jdbcType=TIMESTAMP}
+				</if>
+				<if test="endtDate != null">
+					and i.create_datetime &lt;
+					#{endDate,jdbcType=TIMESTAMP}
+				</if>
+				and i.deleted = 0
+				AND i.is_review = 0
+			</trim>
+		</where>
+	</select>
+
+</mapper>
