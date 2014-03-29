@@ -3,47 +3,109 @@ package db.billingdb.model.custom;
 import java.util.Date;
 
 public class InvoiceReport {
-	private int user_id;
-	private int invoice_id;
-	private String disply_name;
-	private Date create_datetime;
-	private int quantity;
+	private int userId;
+	private int invoiceId;
+	private String userFullName;
+	private String userNumber;
+	private Date createDate;
+	private int currency;
+	private double carriedBalance;
 	private double balance;
-	
-	public int getUser_id() {
-		return user_id;
+	private int status;
+	private double total;
+	private Integer[] payments;
+
+	public void setPaymentString(String paymentString) {
+		if (paymentString != null && !paymentString.isEmpty()) {
+			String[] payments = paymentString.split(",");
+			this.payments = new Integer[payments.length];
+			for (int i = 0; i < payments.length; i++) {
+				this.payments[i] = Integer.parseInt(payments[i]);
+			}
+		}
 	}
-	public void setUser_id(int user_id) {
-		this.user_id = user_id;
+
+	public int getUserId() {
+		return userId;
 	}
-	public int getInvoice_id() {
-		return invoice_id;
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
-	public void setInvoice_id(int invoice_id) {
-		this.invoice_id = invoice_id;
+
+	public int getInvoiceId() {
+		return invoiceId;
 	}
-	public String getDisply_name() {
-		return disply_name;
+
+	public void setInvoiceId(int invoiceId) {
+		this.invoiceId = invoiceId;
 	}
-	public void setDisply_name(String disply_name) {
-		this.disply_name = disply_name;
+
+	public String getUserNumber() {
+		return userNumber;
 	}
-	public Date getCreate_datetime() {
-		return create_datetime;
+
+	public void setUserNumber(String userNumber) {
+		this.userNumber = userNumber;
 	}
-	public void setCreate_datetime(Date create_datetime) {
-		this.create_datetime = create_datetime;
+
+	public String getUserFullName() {
+		return userFullName;
 	}
-	public int getQuantity() {
-		return quantity;
+
+	public void setUserFullName(String userFullName) {
+		this.userFullName = userFullName;
 	}
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
+
+	public Date getCreateDate() {
+		return createDate;
 	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public int getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(int currency) {
+		this.currency = currency;
+	}
+
+	public double getCarriedBalance() {
+		return carriedBalance;
+	}
+
+	public void setCarriedBalance(double carriedBalance) {
+		this.carriedBalance = carriedBalance;
+	}
+
 	public double getBalance() {
 		return balance;
 	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 	public void setBalance(double balance) {
 		this.balance = balance;
+	}
+
+	public double getTotal() {
+		return total;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
+	}
+
+	public Integer[] getPayments() {
+		return this.payments;
 	}
 }

@@ -3,8 +3,6 @@
 
 <mapper namespace="db.billingdb.dao.custom.OrderReportMapper">
 	<resultMap id="RM_1" type="db.billingdb.model.custom.OrderReport">
-
-
 		<result column="p_id" property="paymentId" jdbcType="INTEGER" />
 		<result column="user_id" property="userId" jdbcType="VARCHAR" />
 		<result column="fullname" property="userFullname" jdbcType="VARCHAR" />

@@ -8,4 +8,5 @@ import db.billingdb.model.custom.InvoiceReport;
 public interface InvoiceReportMapper {
 	List<InvoiceReport> getInvoicesByCondition(InvoiceCondition condition);
 	List<InvoiceReport> getUnclosedInvoices(InvoiceCondition condition);
+	List<InvoiceReport> getInvoicesByIDs(List<Integer> invoiceIDs);
 }
