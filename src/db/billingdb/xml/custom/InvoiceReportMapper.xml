@@ -15,72 +15,53 @@
 			jdbcType="VARCHAR" />
 	</resultMap>
 
-	<sql id="report_columns">
-		c.user_id as u_id, i.id as i_id, cf.content as disply_name,
-		i.create_datetime
-		as c_time, il.quantity as quantity,
-		(il.amount
-		<if test="vatRate != 0.0">
-			* (1.0 - #{vatRate,jdbcType=DOUBLE})
-		</if>
-		)as
-		amount
-	</sql>
-
 	<sql id="invoice_columns">
 		c.user_id as u_id,
 		i.id as i_id,
 		cf.content as full_name,
-		cf1.content as userNumber,
+		cf1.content as
+		userNumber,
 		i.create_datetime as c_time,
-		i.total as
+		(i.total
+		<if test="vatRate != 0">
+			* (1.0 - #{vatRate,jdbcType=DOUBLE})
+		</if>
+		)as
 		total,
-		i.balance as balance,
-		i.carried_balance as c_balance,
-		i.status_id
-		as i_status,
-		GROUP_CONCAT(pi.payment_id
-		SEPARATOR ',') as payments
-	</sql>
-
-	<sql id="columns_unclosed">
-		c.user_id as u_id, i.id as i_id, cf.content as disply_name,
-		i.create_datetime
-		as c_time, il.quantity as quantity,
-		il.amount as
-		balance
-	</sql>
-
-	<sql id="main_table">
-		invoice_line il,
-		invoice i,
-		contact c,
-		base_user b,
-		contact_field cf
-	</sql>
-
-	<select id="getInvoicesByIDs" resultMap="BaseResultMap">
-		select
-		c.user_id as u_id,
-		i.id as i_id,
-		cf.content as full_name,
-		cf1.content as userNumber,
-		i.create_datetime as c_time,
-		i.total as total,
 		i.balance as balance,
 		i.carried_balance as c_balance,
 		i.create_datetime as c_date,
 		i.currency_id as currency,
-		g.status_value as i_status,
+		g.status_value
+		as i_status,
 		GROUP_CONCAT(pi.payment_id
 		SEPARATOR ',') as paymentString
-		from
+	</sql>
+
+	<!-- <sql id="columns_unclosed"> -->
+	<!-- c.user_id as u_id, i.id as i_id, cf.content as disply_name, -->
+	<!-- i.create_datetime -->
+	<!-- as c_time, il.quantity as quantity, -->
+	<!-- il.amount as -->
+	<!-- balance -->
+	<!-- </sql> -->
+
+	<sql id="main_tables">
 		invoice i
-			left join payment_invoice pi on pi.invoice_id = i.id
-			join contact c on c.user_id = i.user_id
-			join contact_field cf on cf.contact_id = c.id
-			join contact_field cf1 on cf1.contact_id = c.id
-			join generic_status g on g.id = i.status_id
+		left join payment_invoice pi on pi.invoice_id =
+		i.id
+		join contact c on c.user_id = i.user_id
+		join contact_field cf on
+		cf.contact_id = c.id
+		join contact_field cf1 on cf1.contact_id = c.id
+		join generic_status g on g.id = i.status_id
+	</sql>
+
+	<select id="getInvoicesByIDs" resultMap="BaseResultMap">
+		select
+		<include refid="invoice_columns" />
+		from
+		<include refid="main_tables" />
 		<where>
 			<trim prefix="(" suffix=")" prefixOverrides="and">
 				i.id in
@@ -98,30 +79,77 @@
 	<select id="getInvoicesByCondition" resultMap="BaseResultMap"
 		parameterType="db.billingdb.model.custom.InvoiceCondition">
 		select
-		<include refid="report_columns" />
+		<include refid="invoice_columns" />
 		from
-		<include refid="main_table" />
+		<include refid="main_tables" />
+		<where>
+			i.id in
+			<trim prefix="(" suffix=")">
+				SELECT i.id
+				FROM
+				base_user u
+				join contact c on c.user_id = u.id
+				<if test="userId != 0">
+					AND c.user_id = #{userId,jdbcType=INTEGER}
+				</if>
+				join invoice i on i.user_id = u.id AND i.is_review = 0
+				<where>
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<if test="entityId != 0">
+							AND u.entity_id = #{entityId,jdbcType=INTEGER}
+						</if>
+						<if test="city != 0">
+							AND c.city = #{city,jdbcType=INTEGER}
+						</if>
+						<if test="currencyId != 0">
+							AND i.currency_id = #{currencyId,jdbcType=INTEGER}
+						</if>
+						<if test="startDate != null">
+							and i.create_datetime &gt;=
+							#{startDate,jdbcType=TIMESTAMP}
+						</if>
+						<if test="endDate != null">
+							and i.create_datetime &lt;
+							#{endDate,jdbcType=TIMESTAMP}
+						</if>
+						AND
+						<choose>
+							<when test="deleted">
+								i.deleted = 1
+							</when>
+							<otherwise>
+								i.deleted = 0
+							</otherwise>
+						</choose>
+					</trim>
+				</where>
+			</trim>
+			AND cf.type_id = 432
+			AND cf1.type_id = 434
+		</where>
+		group by i.id
+	</select>
+
+	<select id="getInvoicesIDs" parameterType="db.billingdb.model.custom.InvoiceCondition"
+		resultType="int">
+		SELECT i.id
+		FROM
+		base_user u
+		join contact c on c.user_id = u.id
+		<if test="userId != 0">
+			AND c.user_id = #{userId,jdbcType=INTEGER}
+		</if>
+		join invoice i on i.user_id = u.id AND i.is_review = 0
 		<where>
 			<trim prefix="(" suffix=")" prefixOverrides="and">
 				<if test="entityId != 0">
-					AND b.entity_id = #{entityId,jdbcType=INTEGER}
-				</if>
-				AND b.id = c.user_id
-				AND i.user_id = c.user_id AND
-				cf.contact_id =
-				c.id AND
-				il.invoice_id =
-				i.id AND
-				i.deleted = 0 AND i.is_review = 0 AND
-				cf.type_id = 432
-				<if test="userId != 0">
-					AND c.user_id = #{userId,jdbcType=INTEGER}
+					AND u.entity_id = #{entityId,jdbcType=INTEGER}
 				</if>
 				<if test="city != 0">
 					AND c.city = #{city,jdbcType=INTEGER}
 				</if>
-				<if test="itemId > 0">
-					and il.item_id = #{itemId,jdbcType=INTEGER}
+				<if test="currencyId != 0">
+					AND i.currency_id = #{currencyId,jdbcType=INTEGER}
 				</if>
 				<if test="startDate != null">
 					and i.create_datetime &gt;=
@@ -131,6 +159,15 @@
 					and i.create_datetime &lt;
 					#{endDate,jdbcType=TIMESTAMP}
 				</if>
+				AND
+				<choose>
+					<when test="deleted">
+						i.deleted = 1
+					</when>
+					<otherwise>
+						i.deleted = 0
+					</otherwise>
+				</choose>
 			</trim>
 		</where>
 	</select>

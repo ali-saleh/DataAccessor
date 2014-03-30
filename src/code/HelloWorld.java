@@ -1,5 +1,6 @@
 package code;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,15 +17,24 @@ public class HelloWorld {
 	 */
 	public static void main(String[] args) {
 		InvoiceReportDAO dao = new InvoiceReportDAO();
+		InvoiceCondition condition = new InvoiceCondition();
+		condition.setCity(1);
+		condition.setCurrencyId(12);
+		condition.setDeleted(false);
+		condition.setStartDate(Date.valueOf("2012-3-1"));
+		condition.setEndDate(Date.valueOf("2012-4-30"));
 		
-		List<Integer> x = new ArrayList<Integer>();
-		x.add(8583);
-		x.add(18635);
-		x.add(18636);
-		x.add(18637);
-		x.add(18638);
+//		List<Integer> x = new ArrayList<Integer>();
+//		x.add(8583);
+//		x.add(18635);
+//		x.add(18636);
+//		x.add(18637);
+//		x.add(18638);
+//		
+//		List<Integer> lis = dao.getInvoicesIDs(condition);
+//		System.out.println(lis.size());
 		
-		List<InvoiceReport> l = dao.getInvoicesByIDs(x);
+		List<InvoiceReport> l = dao.getInvoicesByIDs(dao.getInvoicesIDs(condition));
 		System.out.println("" + l.size());
 
 //		 ItemReportDAO dao = new ItemReportDAO();

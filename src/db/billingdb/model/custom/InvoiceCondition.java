@@ -6,11 +6,11 @@ import db.billingdb.model.custom.interfaces.HasDateLimit;
 
 public class InvoiceCondition extends BaseCondition implements HasDateLimit {
 	private int userId = 0;
+	private int currencyId;
 	private Date startDate = null;
 	private Date endDate = null;
 	private double vatRate = 0;
 	private Boolean deleted = false;
-	private int itemId = 0;
 	private int city = 0;
 
 	public int getUserId() {
@@ -19,6 +19,14 @@ public class InvoiceCondition extends BaseCondition implements HasDateLimit {
 
 	public void setUserId(int userId) {
 		this.userId = userId;
+	}
+
+	public int getCurrencyId() {
+		return currencyId;
+	}
+
+	public void setCurrencyId(int currencyId) {
+		this.currencyId = currencyId;
 	}
 
 	public Date getStartDate() {
@@ -45,14 +53,6 @@ public class InvoiceCondition extends BaseCondition implements HasDateLimit {
 		this.deleted = deleted;
 	}
 
-	public int getItemId() {
-		return itemId;
-	}
-
-	public void setItemId(int itemId) {
-		this.itemId = itemId;
-	}
-
 	public int getCity() {
 		return city;
 	}
@@ -73,9 +73,9 @@ public class InvoiceCondition extends BaseCondition implements HasDateLimit {
 	public InvoiceCondition clone() {
 		InvoiceCondition c = new InvoiceCondition();
 		c.userId = userId;
+		c.currencyId = currencyId;
 		c.city = city;
 		c.deleted = deleted;
-		c.itemId = itemId;
 		c.startDate = startDate;
 		c.endDate = endDate;
 		c.vatRate = vatRate;

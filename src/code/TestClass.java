@@ -28,10 +28,10 @@ public class TestClass {
 	public void run_test() {
 		System.out.println("====================Item Report==================");
 		test_ItemReport();
-//		System.out.println("===================Invoice Report================");
-//		test_InvoiceReport();
-//		System.out.println("===================Payment Report================");
-//		test_PaymentReport();
+		// System.out.println("===================Invoice Report================");
+		// test_InvoiceReport();
+		// System.out.println("===================Payment Report================");
+		// test_PaymentReport();
 	}
 
 	public void test_ItemReport() {
@@ -53,7 +53,8 @@ public class TestClass {
 
 		// ////////////////////////////////
 		con.setCurrencyId(1); // 1 for dollar
-		System.out.println("Test 4: ItemReport with different currency (Dollar)");
+		System.out
+				.println("Test 4: ItemReport with different currency (Dollar)");
 		res = res & item_report_conditional(con);
 		System.out.println("Test 4: " + (res ? "Passed" : "Failed"));
 
@@ -79,13 +80,133 @@ public class TestClass {
 		System.out.println("Test 7: ItemReport with deleted invoices");
 		res = res & item_report_conditional(con);
 		System.out.println("Test 7: " + (res ? "Passed" : "Failed"));
-		
+
 		con.setDeleted(false);
-		
+
 		con.setVatRate(0.4);
 		res = res & item_report_conditional(con);
-		
+
 		System.out.println("ItemReport test finished");
+		System.out.println("Over all result is " + (res ? "Passed" : "Failed"));
+	}
+
+	public void test_InvoiceReport() {
+		InvoiceCondition con = null;
+
+		// ////////////////////////////////
+		System.out.println("Test 1: InvoiceReport with null condition");
+		res = invoice_report_test_null(con);
+		System.out.println("Test 1: " + (res ? "Passed" : "Failed"));
+
+		// ////////////////////////////////
+		con = new InvoiceCondition();
+		System.out.println("Test 2: InvoiceReport with default condition");
+		res = res & invoice_report_test_default(con);
+		System.out.println("Test 2: " + (res ? "Passed" : "Failed"));
+
+		System.out.println("ItemReport test finished");
+		System.out.println("Over all result is " + (res ? "Passed" : "Failed"));
+	}
+
+	public void test_PaymentReport() {
+		PaymentCondition con = null;
+
+		// ////////////////////////////////
+		System.out.println("Test 1: PaymentReport with null condition (cash)");
+		res = general_cash_test(con);
+		System.out.println("Test 1: " + (res ? "Passed" : "Failed"));
+
+		// ////////////////////////////////
+		con = new PaymentCondition();
+		System.out
+				.println("Test 2: PaymentReport with default condition (cash)");
+		res = res & general_cash_test(con);
+		System.out.println("Test 2: " + (res ? "Passed" : "Failed"));
+
+		// ////////////////////////////////
+		con.setCurrencyId(1); // 1 for dollar
+		System.out
+				.println("Test 3: PaymentReport with different currency (cash)");
+		res = res & general_cash_test(con);
+		System.out.println("Test 3: " + (res ? "Passed" : "Failed"));
+
+		con.setCurrencyId(12); // default shekel
+
+		// ////////////////////////////////
+		con.setCity(1); // 1 for Ramallah
+		System.out.println("Test 4: PaymentReport with specific city (cash)");
+		res = res & general_cash_test(con);
+		System.out.println("Test 4: " + (res ? "Passed" : "Failed"));
+
+		con.setCity(0); // for all cities
+
+		// ////////////////////////////////
+		con.setStartDate(Date.valueOf("2012-3-1"));
+		con.setEndDate(Date.valueOf("2012-4-30"));
+		System.out
+				.println("Test 5: PaymentReport with specific start & end date (cash)");
+		res = res & general_cash_test(con);
+		System.out.println("Test 5: " + (res ? "Passed" : "Failed"));
+
+		// ////////////////////////////////
+		con.setDeleted(true);
+		System.out
+				.println("Test 6: PaymentReport with deleted payments (cash)");
+		res = res & general_cash_test(con);
+		System.out.println("Test 6: " + (res ? "Passed" : "Failed"));
+
+		// ////////////////////////////////
+		// For Cheques
+		// ////////////////////////////////
+
+		System.out.println("======= Testing Cheque methods");
+
+		System.out
+				.println("Test 7: PaymentReport with null condition (Cheque)");
+		res = general_cheque_test(con);
+		System.out.println("Test 7: " + (res ? "Passed" : "Failed"));
+
+		// ////////////////////////////////
+		con = new PaymentCondition();
+		System.out
+				.println("Test 8: PaymentReport with default condition (Cheque)");
+		res = res & general_cheque_test(con);
+		System.out.println("Test 8: " + (res ? "Passed" : "Failed"));
+
+		// ////////////////////////////////
+		con.setCurrencyId(1); // 1 for dollar
+		System.out
+				.println("Test 9: PaymentReport with different currency (Cheque)");
+		res = res & general_cheque_test(con);
+		System.out.println("Test 9: " + (res ? "Passed" : "Failed"));
+
+		con.setCurrencyId(12); // default shekel
+
+		// ////////////////////////////////
+		con.setCity(1); // 1 for Ramallah
+		System.out
+				.println("Test 10: PaymentReport with specific city (Cheque)");
+		res = res & general_cheque_test(con);
+		System.out.println("Test 10: " + (res ? "Passed" : "Failed"));
+
+		con.setCity(0); // for all cities
+
+		// ////////////////////////////////
+		con.setStartDate(Date.valueOf("2012-3-1"));
+		con.setEndDate(Date.valueOf("2012-4-30"));
+		System.out
+				.println("Test 11: PaymentReport with specific start & end date (Cheque)");
+		res = res & general_cheque_test(con);
+		System.out.println("Test 11: " + (res ? "Passed" : "Failed"));
+
+		// ////////////////////////////////
+		con.setDeleted(true);
+		System.out
+				.println("Test 12: PaymentReport with deleted payments (Cheque)");
+		res = res & general_cheque_test(con);
+		System.out.println("Test 12: " + (res ? "Passed" : "Failed"));
+
+		System.out.println("PaymentReport test finished");
 		System.out.println("Over all result is " + (res ? "Passed" : "Failed"));
 	}
 
@@ -109,24 +230,6 @@ public class TestClass {
 			return false;
 		}
 		return true;
-	}
-
-	public void test_InvoiceReport() {
-		InvoiceCondition con = null;
-
-		// ////////////////////////////////
-		System.out.println("Test 1: InvoiceReport with null condition");
-		res = invoice_report_test_null(con);
-		System.out.println("Test 1: " + (res ? "Passed" : "Failed"));
-
-		// ////////////////////////////////
-		con = new InvoiceCondition();
-		System.out.println("Test 2: InvoiceReport with default condition");
-		res = res & invoice_report_test_default(con);
-		System.out.println("Test 2: " + (res ? "Passed" : "Failed"));
-
-		System.out.println("ItemReport test finished");
-		System.out.println("Over all result is " + (res ? "Passed" : "Failed"));
 	}
 
 	private boolean invoice_report_test_null(InvoiceCondition con) {
@@ -159,98 +262,6 @@ public class TestClass {
 	private boolean invoice_report_test_with_(InvoiceCondition con) {
 
 		return true;
-	}
-
-	public void test_PaymentReport() {
-		PaymentCondition con = null;
-
-		// ////////////////////////////////
-		System.out.println("Test 1: PaymentReport with null condition (cash)");
-		res = general_cash_test(con);
-		System.out.println("Test 1: " + (res ? "Passed" : "Failed"));
-
-		// ////////////////////////////////
-		con = new PaymentCondition();
-		System.out.println("Test 2: PaymentReport with default condition (cash)");
-		res = res & general_cash_test(con);
-		System.out.println("Test 2: " + (res ? "Passed" : "Failed"));
-
-		// ////////////////////////////////
-		con.setCurrencyId(1); // 1 for dollar
-		System.out.println("Test 3: PaymentReport with different currency (cash)");
-		res = res & general_cash_test(con);
-		System.out.println("Test 3: " + (res ? "Passed" : "Failed"));
-
-		con.setCurrencyId(12); // default shekel
-
-		// ////////////////////////////////
-		con.setCity(1); // 1 for Ramallah
-		System.out.println("Test 4: PaymentReport with specific city (cash)");
-		res = res & general_cash_test(con);
-		System.out.println("Test 4: " + (res ? "Passed" : "Failed"));
-
-		con.setCity(0); // for all cities
-
-		// ////////////////////////////////
-		con.setStartDate(Date.valueOf("2012-3-1"));
-		con.setEndDate(Date.valueOf("2012-4-30"));
-		System.out.println("Test 5: PaymentReport with specific start & end date (cash)");
-		res = res & general_cash_test(con);
-		System.out.println("Test 5: " + (res ? "Passed" : "Failed"));
-
-		// ////////////////////////////////
-		con.setDeleted(true);
-		System.out.println("Test 6: PaymentReport with deleted payments (cash)");
-		res = res & general_cash_test(con);
-		System.out.println("Test 6: " + (res ? "Passed" : "Failed"));
-
-		// ////////////////////////////////
-		// For Cheques
-		// ////////////////////////////////
-
-		System.out.println("======= Testing Cheque methods");
-
-		System.out.println("Test 7: PaymentReport with null condition (Cheque)");
-		res = general_cheque_test(con);
-		System.out.println("Test 7: " + (res ? "Passed" : "Failed"));
-
-		// ////////////////////////////////
-		con = new PaymentCondition();
-		System.out.println("Test 8: PaymentReport with default condition (Cheque)");
-		res = res & general_cheque_test(con);
-		System.out.println("Test 8: " + (res ? "Passed" : "Failed"));
-
-		// ////////////////////////////////
-		con.setCurrencyId(1); // 1 for dollar
-		System.out.println("Test 9: PaymentReport with different currency (Cheque)");
-		res = res & general_cheque_test(con);
-		System.out.println("Test 9: " + (res ? "Passed" : "Failed"));
-
-		con.setCurrencyId(12); // default shekel
-
-		// ////////////////////////////////
-		con.setCity(1); // 1 for Ramallah
-		System.out.println("Test 10: PaymentReport with specific city (Cheque)");
-		res = res & general_cheque_test(con);
-		System.out.println("Test 10: " + (res ? "Passed" : "Failed"));
-
-		con.setCity(0); // for all cities
-
-		// ////////////////////////////////
-		con.setStartDate(Date.valueOf("2012-3-1"));
-		con.setEndDate(Date.valueOf("2012-4-30"));
-		System.out.println("Test 11: PaymentReport with specific start & end date (Cheque)");
-		res = res & general_cheque_test(con);
-		System.out.println("Test 11: " + (res ? "Passed" : "Failed"));
-
-		// ////////////////////////////////
-		con.setDeleted(true);
-		System.out.println("Test 12: PaymentReport with deleted payments (Cheque)");
-		res = res & general_cheque_test(con);
-		System.out.println("Test 12: " + (res ? "Passed" : "Failed"));
-
-		System.out.println("PaymentReport test finished");
-		System.out.println("Over all result is " + (res ? "Passed" : "Failed"));
 	}
 
 	private boolean general_cash_test(PaymentCondition con) {
