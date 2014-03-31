@@ -131,5 +131,22 @@ WHERE
                 AND i.deleted = 0)
         AND cf.type_id = 432
         AND cf1.type_id = 434
-group by i.id
+group by i.id;
 
+
+
+
+select
+urm.user_id, cf.content
+from
+user_role_map urm,
+contact c,
+contact_field cf
+where
+urm.role_id = 3
+AND 
+c.user_id = urm.user_id
+AND
+cf.contact_id = c.id
+AND
+cf.type_id = 432

@@ -2,13 +2,16 @@ package code;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import db.billingdb.dao.custom.impl.InvoiceReportDAO;
 import db.billingdb.dao.custom.impl.ItemReportDAO;
+import db.billingdb.dao.custom.impl.UserReportDAO;
 import db.billingdb.model.custom.InvoiceCondition;
 import db.billingdb.model.custom.InvoiceReport;
 import db.billingdb.model.custom.Item;
+import db.billingdb.model.custom.SimpleUser;
 
 public class HelloWorld {
 
@@ -16,13 +19,13 @@ public class HelloWorld {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		InvoiceReportDAO dao = new InvoiceReportDAO();
-		InvoiceCondition condition = new InvoiceCondition();
-		condition.setCity(1);
-		condition.setCurrencyId(12);
-		condition.setDeleted(false);
-		condition.setStartDate(Date.valueOf("2012-3-1"));
-		condition.setEndDate(Date.valueOf("2012-4-30"));
+//		InvoiceReportDAO dao = new InvoiceReportDAO();
+//		InvoiceCondition condition = new InvoiceCondition();
+//		condition.setCity(1);
+//		condition.setCurrencyId(12);
+//		condition.setDeleted(false);
+//		condition.setStartDate(Date.valueOf("2012-3-1"));
+//		condition.setEndDate(Date.valueOf("2012-4-30"));
 		
 //		List<Integer> x = new ArrayList<Integer>();
 //		x.add(8583);
@@ -34,8 +37,8 @@ public class HelloWorld {
 //		List<Integer> lis = dao.getInvoicesIDs(condition);
 //		System.out.println(lis.size());
 		
-		List<InvoiceReport> l = dao.getInvoicesByIDs(dao.getInvoicesIDs(condition));
-		System.out.println("" + l.size());
+//		List<InvoiceReport> l = dao.getInvoicesByIDs(dao.getInvoicesIDs(condition));
+//		System.out.println("" + l.size());
 
 //		 ItemReportDAO dao = new ItemReportDAO();
 //		
@@ -43,6 +46,9 @@ public class HelloWorld {
 //		
 //		 x.get(0);
 
+		UserReportDAO dao = new UserReportDAO();
+		List<SimpleUser> lis =  dao.getSalesmenList();
+		
 		// try {
 		//
 		// // LoginUserDAO dao = new LoginUserDAO();
