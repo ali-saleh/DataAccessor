@@ -8,6 +8,7 @@
 		<result column="full_name" property="userFullName" jdbcType="VARCHAR" />
 		<result column="currency" property="currency" jdbcType="INTEGER" />
 		<result column="c_time" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="total" property="total" jdbcType="DOUBLE" />
 		<result column="balance" property="balance" jdbcType="DOUBLE" />
 		<result column="c_balance" property="carriedBalance" jdbcType="DOUBLE" />
 		<result column="i_status" property="status" jdbcType="DOUBLE" />
