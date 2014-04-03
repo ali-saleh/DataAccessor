@@ -10,12 +10,12 @@ import db.billingdb.model.custom.UserInfo;
 public class UserReportDAO extends BaseDAO implements UserReportMapper {
 
 	@Override
-	public List<SimpleUser> getSalesmenList() {
+	public List<SimpleUser> getSalesmenListByCity(int city) {
 		SqlSession openSession = _session.openSession();
 		List<SimpleUser> res = null;
 		try {
 			UserReportMapper map = openSession.getMapper(UserReportMapper.class);
-			res = map.getSalesmenList();
+			res = map.getSalesmenListByCity(city);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -25,12 +25,12 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 	}
 
 	@Override
-	public List<SimpleUser> getDistibutorList() {
+	public List<SimpleUser> getDistibutorListByCity(int city) {
 		SqlSession openSession = _session.openSession();
 		List<SimpleUser> res = null;
 		try {
 			UserReportMapper map = openSession.getMapper(UserReportMapper.class);
-			res = map.getDistibutorList();
+			res = map.getDistibutorListByCity(city);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -53,5 +53,4 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 		}
 		return res;
 	}
-
 }

@@ -28,4 +28,6 @@ public class UserInfo {
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
+	
+	
 }

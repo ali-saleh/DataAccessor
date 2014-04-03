@@ -5,6 +5,13 @@
 		<result column="user_id" property="id" jdbcType="INTEGER" />
 		<result column="fullname" property="fullname" jdbcType="VARCHAR" />
 	</resultMap>
+	
+	<resultMap id="UserInfoMap" type="db.billingdb.model.custom.UserInfo">
+		<result column="user_id" property="id" jdbcType="INTEGER" />
+		<result column="fullname" property="fullname" jdbcType="VARCHAR" />
+		<result column="username" property="username" jdbcType="VARCHAR"/>
+	</resultMap>
+
 
 	<!-- <resultMap id="ItemReportMap" type="db.billingdb.model.custom.ItemReport"> -->
 	<!-- <result column="item_id" property="itemId" jdbcType="INTEGER" /> -->
@@ -31,16 +38,22 @@
 	<!-- international_description d -->
 	<!-- </sql> -->
 
-	<select id="getSalesmenList" resultMap="SimpleUserMap">
+	<select id="getSalesmenList" resultMap="SimpleUserMap"
+		parameterType="int">
 		select
 		urm.user_id as
 		user_id,
 		cf.content as fullname
 		from
-		user_role_map urm,
+		user_role_map
+		urm,
 		contact c,
 		contact_field cf
 		where
+		<if test="city != 0">
+			c.city = #{city, jdbcType=INTEGER}
+			AND
+		</if>
 		urm.role_id = 9
 		AND
 		c.user_id = urm.user_id
@@ -52,7 +65,8 @@
 
 	<select id="getDistibutorList" resultMap="SimpleUserMap">
 		select
-		urm.user_id as user_id,
+		urm.user_id as
+		user_id,
 		cf.content as fullname
 		from
 		user_role_map urm,
@@ -68,7 +82,8 @@
 		cf.type_id = 432
 	</select>
 
-	<select id="getUsersByName" resultMap="SimpleUserMap" parameterType="map" >
+	<select id="getUsersByName" resultMap="SimpleUserMap"
+		parameterType="map">
 		select
 		c.user_id as user_id,
 		cf.content as fullname
@@ -86,7 +101,7 @@
 		cf.content like #{name, jdbcType=VARCHAR}
 	</select>
 
-
+	<select id="getActiveUsers"></select>
 
 	<!-- <sql id="item_report_columns"> -->
 	<!-- rpt.item_id item_id, -->
