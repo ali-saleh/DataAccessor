@@ -4,6 +4,24 @@ public class UserInfo {
 	private int id;
 	private String username;
 	private String fullName;
+	private String city;
+	private double balance;
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
 
 	public int getId() {
 		return id;

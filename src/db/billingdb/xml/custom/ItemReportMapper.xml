@@ -100,10 +100,8 @@
 			AND
 		</if>
 		<if test="itemIds != null">
-			i_0.item_id = #{itemId,jdbcType=INTEGER}
-			AND
-
-			<foreach item="item" index="index" collection="list" open="("
+			i_0.item_id in 
+			<foreach item="item" index="index" collection="itemIds" open="("
 				separator="," close=")">
 				#{item}
 			</foreach>

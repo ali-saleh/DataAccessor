@@ -5,88 +5,56 @@
 		<result column="user_id" property="id" jdbcType="INTEGER" />
 		<result column="fullname" property="fullname" jdbcType="VARCHAR" />
 	</resultMap>
-	
-	<resultMap id="UserInfoMap" type="db.billingdb.model.custom.UserInfo">
-		<result column="user_id" property="id" jdbcType="INTEGER" />
-		<result column="fullname" property="fullname" jdbcType="VARCHAR" />
-		<result column="username" property="username" jdbcType="VARCHAR"/>
+
+	<resultMap id="UserInfoMap" type="db.billingdb.model.custom.UserInfo"
+		extends="SimpleUserMap">
+		<result column="username" property="username" jdbcType="VARCHAR" />
 	</resultMap>
 
+	<resultMap id="outstandingMap" type="db.billingdb.model.custom.OutstandingUser"
+		extends="UserInfoMap">
+		<result column="city" property="city" jdbcType="VARCHAR" />
+		<result column="balance" property="balance" jdbcType="DOUBLE" />
+	</resultMap>
 
-	<!-- <resultMap id="ItemReportMap" type="db.billingdb.model.custom.ItemReport"> -->
-	<!-- <result column="item_id" property="itemId" jdbcType="INTEGER" /> -->
-	<!-- <result column="desc" property="itemDescription" jdbcType="VARCHAR" 
-		/> -->
-	<!-- <result column="qnt" property="quantity" jdbcType="INTEGER" /> -->
-	<!-- <result column="num_orders" property="orderCount" jdbcType="INTEGER" 
-		/> -->
-	<!-- <result column="amount" property="amount" jdbcType="DOUBLE" /> -->
-	<!-- </resultMap> -->
-
-	<!-- <sql id="item_columns"> -->
-	<!-- i.id as i_id, -->
-	<!-- i.internal_number as i_internal, -->
-	<!-- p.price as -->
-	<!-- p_price, -->
-	<!-- c.code as c_code, -->
-	<!-- d.content as d_content -->
-	<!-- </sql> -->
-
-	<!-- <sql id="item_tables"> -->
-	<!-- item i, item_price p, -->
-	<!-- currency c, -->
-	<!-- international_description d -->
-	<!-- </sql> -->
+	<resultMap id="customerMap" type="db.billingdb.model.custom.Customer"
+		extends="UserInfoMap" />
 
 	<select id="getSalesmenList" resultMap="SimpleUserMap"
 		parameterType="int">
 		select
-		urm.user_id as
-		user_id,
-		cf.content as fullname
+		urm.user_id 'user_id',
+		cf.content 'fullname'
 		from
-		user_role_map
-		urm,
-		contact c,
-		contact_field cf
-		where
+		user_role_map urm
+		join contact c on urm.role_id = 9 AND c.user_id = urm.user_id AND
+		c.deleted = false
 		<if test="city != 0">
-			c.city = #{city, jdbcType=INTEGER}
-			AND
+			AND c.city = #{city, jdbcType=INTEGER}
 		</if>
-		urm.role_id = 9
-		AND
-		c.user_id = urm.user_id
-		AND
-		cf.contact_id = c.id
-		AND
-		cf.type_id = 432
+		join contact_field cf on cf.contact_id = c.id AND cf.type_id = 432
 	</select>
 
-	<select id="getDistibutorList" resultMap="SimpleUserMap">
+	<select id="getDistibutorList" resultMap="SimpleUserMap"
+		parameterType="int">
 		select
-		urm.user_id as
-		user_id,
-		cf.content as fullname
+		urm.user_id 'user_id',
+		cf.content 'fullname'
 		from
-		user_role_map urm,
-		contact c,
-		contact_field cf
-		where
-		urm.role_id = 4
-		AND
-		c.user_id = urm.user_id
-		AND
-		cf.contact_id = c.id
-		AND
-		cf.type_id = 432
+		user_role_map urm
+		join contact c on urm.role_id = 4 AND c.user_id = urm.user_id AND
+		c.deleted = false
+		<if test="city != 0">
+			AND c.city = #{city, jdbcType=INTEGER}
+		</if>
+		join contact_field cf on cf.contact_id = c.id AND cf.type_id = 432
 	</select>
 
 	<select id="getUsersByName" resultMap="SimpleUserMap"
 		parameterType="map">
 		select
-		c.user_id as user_id,
-		cf.content as fullname
+		c.user_id user_id,
+		cf.content fullname
 		from
 		contact c,
 		contact_field cf
@@ -101,7 +69,35 @@
 		cf.content like #{name, jdbcType=VARCHAR}
 	</select>
 
-	<select id="getActiveUsers"></select>
+	<select id="getActiveUsers" parameterType="Date">
+		select
+		distinct
+		po.user_id
+		from
+		purchase_order po
+		where
+		po.active_until &gt;
+		#{date,
+		jdbcType=TIMESTAMP}
+		order by po.active_until desc
+	</select>
+
+	<select id="getAllCustomers" resultMap="customerMap">
+		select
+		urm.user_id
+		'user_id',
+		cf2.content 'username',
+		cf1.content 'fullname'
+		from
+		user_role_map urm
+		join contact c on urm.role_id = 5 AND c.user_id =
+		urm.user_id AND
+		c.deleted = false
+		join contact_field cf1 on
+		cf1.contact_id = c.id AND cf1.type_id = 432
+		join contact_field cf2 on
+		cf2.contact_id = c.id AND cf2.type_id = 434
+	</select>
 
 	<!-- <sql id="item_report_columns"> -->
 	<!-- rpt.item_id item_id, -->

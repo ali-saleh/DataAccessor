@@ -19,40 +19,26 @@ import javax.swing.filechooser.FileSystemView;
 import db.billingdb.dao.custom.impl.InvoiceReportDAO;
 import db.billingdb.dao.custom.impl.ItemReportDAO;
 import db.billingdb.dao.custom.impl.UserReportDAO;
+import db.billingdb.model.custom.Customer;
 import db.billingdb.model.custom.InvoiceCondition;
 import db.billingdb.model.custom.InvoiceReport;
 import db.billingdb.model.custom.Item;
+import db.billingdb.model.custom.ItemReport;
+import db.billingdb.model.custom.ItemReportCondition;
 import db.billingdb.model.custom.SimpleUser;
-import db.billingdb.model.custom.UserInfo;
-
 public class HelloWorld {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
-		Properties prop = new Properties();
-		InputStream input = null;
-		try {
-			input = new FileInputStream("conf/test.properties");
-			prop.load(input);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
-		String x = prop.getProperty("name");
+		System.out.println(String.format("%-12s-test", "Hiell"));
 		
-		 UserReportDAO dao = new UserReportDAO();
-		 List<SimpleUser> lis = dao.getSalesmenList();
+		UserReportDAO dao = new UserReportDAO();
+		List<Customer> x = dao.getAllCustomers();
 		
-		 List<UserInfo> i = dao.getUsersByName(x, 0);
-		
-		 System.out.println(i.size());
+		System.out.println(x.size());
 		
 		// InvoiceReportDAO dao = new InvoiceReportDAO();
 		// InvoiceCondition condition = new InvoiceCondition();
@@ -76,9 +62,13 @@ public class HelloWorld {
 		// dao.getInvoicesByIDs(dao.getInvoicesIDs(condition));
 		// System.out.println("" + l.size());
 
-		// ItemReportDAO dao = new ItemReportDAO();
-		//
-		// List<Item> x = dao.listItems();
+//		 ItemReportDAO dao = new ItemReportDAO();
+//		 ItemReportCondition condition = new ItemReportCondition();
+//		 condition.setItemId(1333);
+//		 
+//		 List<ItemReport> x = dao.getItemReport(condition);
+//		 
+//		 System.out.println(x.size());
 		//
 		// x.get(0);
 

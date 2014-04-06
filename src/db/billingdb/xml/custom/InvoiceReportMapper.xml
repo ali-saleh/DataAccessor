@@ -141,6 +141,15 @@
 			AND c.user_id = #{userId,jdbcType=INTEGER}
 		</if>
 		join invoice i on i.user_id = u.id AND i.is_review = 0
+
+		<if test="partnerId != 0">
+			join contact_field cf on cf.contact_id = c.id AND cf.type_id = 443
+		</if>
+
+		<if test="salesmanId != 0">
+			join contact_field cf1 on cf1.contact_id = c.id AND cf1.type_id = 444
+		</if>
+
 		<where>
 			<trim prefix="(" suffix=")" prefixOverrides="and">
 				<if test="entityId != 0">
@@ -159,6 +168,12 @@
 				<if test="endDate != null">
 					and i.create_datetime &lt;
 					#{endDate,jdbcType=TIMESTAMP}
+				</if>
+				<if test="partnerId">
+					cf.content = # {partnerId, jdbcType=INTEGER}
+				</if>
+				<if test="salesmanId != 0">
+					cf1.content = # {salesmanId, jdbcType=INTEGER}
 				</if>
 				AND
 				<choose>

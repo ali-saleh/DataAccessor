@@ -133,20 +133,14 @@ WHERE
         AND cf1.type_id = 434
 group by i.id;
 
+-- Query for getting users 
+select 
+	urm.user_id 'user number',
+	cf2.content 'username',
+	cf1.content 'fullname'
+from 
+user_role_map urm
+join contact c on urm.role_id = 5 AND c.user_id = urm.user_id AND c.deleted = false
+join contact_field cf1 on cf1.contact_id = c.id AND cf1.type_id = 432
+join contact_field cf2 on cf2.contact_id = c.id AND cf2.type_id = 434;
 
-
-
-select
-urm.user_id, cf.content
-from
-user_role_map urm,
-contact c,
-contact_field cf
-where
-urm.role_id = 3
-AND 
-c.user_id = urm.user_id
-AND
-cf.contact_id = c.id
-AND
-cf.type_id = 432

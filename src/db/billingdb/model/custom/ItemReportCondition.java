@@ -1,10 +1,13 @@
 package db.billingdb.model.custom;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import db.billingdb.model.custom.interfaces.HasDateLimit;
 
 public class ItemReportCondition extends BaseCondition implements HasDateLimit {
+	private List<Integer> itemIds;
 	private int itemId = 0;
 	private int userId = 0;
 	private Date startDate = null;
@@ -13,7 +16,15 @@ public class ItemReportCondition extends BaseCondition implements HasDateLimit {
 	private Boolean deleted = false;
 	private int currencyId = 12; // Referring to Shekel
 	private int city = 0;
+	
+	public List<Integer> getItemIds() {
+		return itemIds;
+	}
 
+	public void setItemIds(List<Integer> itemIds) {
+		this.itemIds = itemIds;
+	}
+	
 	public int getItemId() {
 		return itemId;
 	}
@@ -84,6 +95,10 @@ public class ItemReportCondition extends BaseCondition implements HasDateLimit {
 		c.city = city;
 		c.currencyId = currencyId;
 		c.deleted = deleted;
+		c.itemIds = new ArrayList<Integer>();
+		for(Integer i: itemIds) {
+			c.itemIds.add(i);
+		}
 		c.itemId = itemId;
 		c.userId = userId;
 		c.startDate = startDate;

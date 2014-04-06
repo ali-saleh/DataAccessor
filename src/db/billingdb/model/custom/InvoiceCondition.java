@@ -7,6 +7,8 @@ import db.billingdb.model.custom.interfaces.HasDateLimit;
 public class InvoiceCondition extends BaseCondition implements HasDateLimit {
 	private int userId = 0;
 	private int currencyId;
+	private int partnerId;
+	private int salesmanId;
 	private Date startDate = null;
 	private Date endDate = null;
 	private double vatRate = 0;
@@ -27,6 +29,22 @@ public class InvoiceCondition extends BaseCondition implements HasDateLimit {
 
 	public void setCurrencyId(int currencyId) {
 		this.currencyId = currencyId;
+	}
+
+	public int getPartnerId() {
+		return partnerId;
+	}
+
+	public void setPartnerId(int partnerId) {
+		this.partnerId = partnerId;
+	}
+
+	public int getSalesmanId() {
+		return salesmanId;
+	}
+
+	public void setSalesmanId(int salesmanId) {
+		this.salesmanId = salesmanId;
 	}
 
 	public Date getStartDate() {
@@ -74,6 +92,8 @@ public class InvoiceCondition extends BaseCondition implements HasDateLimit {
 		InvoiceCondition c = new InvoiceCondition();
 		c.userId = userId;
 		c.currencyId = currencyId;
+		c.partnerId = partnerId;
+		c.salesmanId = salesmanId;
 		c.city = city;
 		c.deleted = deleted;
 		c.startDate = startDate;
