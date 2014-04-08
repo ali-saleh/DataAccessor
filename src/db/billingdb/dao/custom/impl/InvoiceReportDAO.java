@@ -75,6 +75,11 @@ public class InvoiceReportDAO extends BaseDAO implements InvoiceReportMapper {
 
 	@Override
 	public List<InvoiceReport> getInvoicesByIDs(List<Integer> invoiceIDs) {
+		
+		if (invoiceIDs == null || invoiceIDs.size() == 0) {
+			return null;
+		}
+		
 		SqlSession openSession = _session.openSession();
 		List<InvoiceReport> list = null;
 		try {

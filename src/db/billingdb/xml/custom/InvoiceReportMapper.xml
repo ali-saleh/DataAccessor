@@ -23,12 +23,7 @@
 		cf1.content as
 		userNumber,
 		i.create_datetime as c_time,
-		(i.total
-		<if test="vatRate != 0">
-			* (1.0 - #{vatRate,jdbcType=DOUBLE})
-		</if>
-		)as
-		total,
+		i.total as total,
 		i.balance as balance,
 		i.carried_balance as c_balance,
 		i.create_datetime as c_date,
@@ -136,7 +131,7 @@
 		SELECT i.id
 		FROM
 		base_user u
-		join contact c on c.user_id = u.id
+		join contact c on c.user_id = u.id AND u.deleted = 0
 		<if test="userId != 0">
 			AND c.user_id = #{userId,jdbcType=INTEGER}
 		</if>
