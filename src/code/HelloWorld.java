@@ -18,6 +18,7 @@ import javax.swing.filechooser.FileSystemView;
 
 import db.billingdb.dao.custom.impl.InvoiceReportDAO;
 import db.billingdb.dao.custom.impl.ItemReportDAO;
+import db.billingdb.dao.custom.impl.PaymentReportDAO;
 import db.billingdb.dao.custom.impl.UserReportDAO;
 import db.billingdb.model.custom.Customer;
 import db.billingdb.model.custom.InvoiceCondition;
@@ -25,6 +26,8 @@ import db.billingdb.model.custom.InvoiceReport;
 import db.billingdb.model.custom.Item;
 import db.billingdb.model.custom.ItemReport;
 import db.billingdb.model.custom.ItemReportCondition;
+import db.billingdb.model.custom.PaymentCondition;
+import db.billingdb.model.custom.PaymentReport;
 import db.billingdb.model.custom.SimpleUser;
 public class HelloWorld {
 
@@ -33,12 +36,12 @@ public class HelloWorld {
 	 */
 	public static void main(String[] args) {
 		
-		System.out.println(String.format("%-12s-test", "Hiell"));
-		
-		UserReportDAO dao = new UserReportDAO();
-		List<Customer> x = dao.getAllCustomers();
-		
-		System.out.println(x.size());
+//		System.out.println(String.format("%-12s-test", "Hiell"));
+//		
+//		UserReportDAO dao = new UserReportDAO();
+//		List<Customer> x = dao.getAllCustomers();
+//		
+//		System.out.println(x.size());
 		
 		// InvoiceReportDAO dao = new InvoiceReportDAO();
 		// InvoiceCondition condition = new InvoiceCondition();
@@ -94,20 +97,18 @@ public class HelloWorld {
 		// // }
 		// // System.out.println(l.size());
 		//
-		// PaymentCondition condition = new PaymentCondition();
-		// condition.setDeleted(true);
-		// condition.setCurrencyId(12);
-		// condition.setStartDate(Date.valueOf("2012-3-1"));
-		// condition.setEndDate(Date.valueOf("2012-4-30"));
-		//
-		// PaymentReportDAO dao = new PaymentReportDAO();
-		// List<PaymentReportCheque> l = dao.getChequePayments(condition);
-		//
-		// System.out.println(l.get(0).getInvoiceId().size());
-		//
-		// } catch (Exception e) {
-		// System.out.println("Error: " + e.getMessage());
-		// }
+		 PaymentCondition condition = new PaymentCondition();
+		 condition.setDeleted(false);
+		 condition.setCurrencyId(12);
+		 condition.setPaymentMethod(10);
+		 condition.setStartDate(Date.valueOf("2012-3-1"));
+		 condition.setEndDate(Date.valueOf("2012-4-30"));
+		
+		 PaymentReportDAO dao = new PaymentReportDAO();
+		 List<PaymentReport> l = dao.getPayments(condition);
+		
+		 System.out.println(l.get(0).getChequeInfo());
+		
 		// TestClass t = new TestClass();
 		// t.run_test();
 	}

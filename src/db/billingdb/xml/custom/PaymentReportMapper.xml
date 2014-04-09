@@ -43,11 +43,14 @@
 	</sql>
 
 	<sql id="main_tables">
-		payment p,
-		payment_invoice pi,
-		base_user b,
-		contact c,
-		contact_field cf
+		payment p
+		join base_user b on p.user_id = b.id
+		<if test="entityId != 0">
+			AND b.entity_id = #{entityId,jdbcType=INTEGER}
+		</if>
+		join contact c on c.user_id = p.user_id
+		join contact_field cf on cf.contact_id = c.id AND cf.type_id = 432
+		left join payment_invoice pi on pi.payment_id = p.id
 	</sql>
 
 	<select id="getPayments" resultMap="RM_1"
@@ -58,17 +61,6 @@
 		<include refid="main_tables" />
 		<where>
 			<trim prefix="(" suffix=")" prefixOverrides="and">
-				<if test="entityId != 0">
-					AND b.entity_id = #{entityId,jdbcType=INTEGER}
-				</if>
-				AND p.user_id = b.id
-				AND p.user_id = c.user_id
-				AND pi.payment_id =
-				p.id
-				AND cf.contact_id =
-				c.id
-				AND cf.type_id = 432 <!-- For user's full name -->
-				AND
 				<choose>
 					<when test="deleted">
 						p.deleted = 1
