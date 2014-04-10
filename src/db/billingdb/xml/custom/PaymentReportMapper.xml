@@ -4,8 +4,8 @@
 <mapper namespace="db.billingdb.dao.custom.PaymentReportMapper">
 	<resultMap id="RM_1" type="db.billingdb.model.custom.PaymentReport">
 		<result column="p_id" property="paymentId" jdbcType="INTEGER" />
-		<result column="user_id" property="userId" jdbcType="VARCHAR" />
-		<result column="fullname" property="userFullname" jdbcType="VARCHAR" />
+		<result column="user_id" property="userNumber" jdbcType="VARCHAR" />
+		<result column="fullname" property="userFullName" jdbcType="VARCHAR" />
 		<result column="c_time" property="paymentDate" jdbcType="TIMESTAMP" />
 		<result column="amount" property="amount" jdbcType="DOUBLE" />
 		<result column="invoices" property="invoices_string"></result>

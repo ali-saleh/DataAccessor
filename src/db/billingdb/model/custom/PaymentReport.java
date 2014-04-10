@@ -1,18 +1,15 @@
 package db.billingdb.model.custom;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 
 import db.billingdb.model.custom.info.ChequeInfo;
-import db.billingdb.model.custom.info.PaymentInvoiceItem;
 
 public class PaymentReport {
 	private int paymentId;
-	private String userId;
-	private String userFullname;
+	private String userNumber;
+	private String userFullName;
 	private Date paymentDate;
-	private List<Integer> invoiceIds = new ArrayList<Integer>();
+	private Integer[] invoices;
 	private int amount;
 	private ChequeInfo chequeInfo;
 
@@ -24,20 +21,20 @@ public class PaymentReport {
 		this.paymentId = paymentId;
 	}
 
-	public String getUserId() {
-		return userId;
+	public String getUserNumber() {
+		return userNumber;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUserNumber(String userNumber) {
+		this.userNumber = userNumber;
 	}
 
-	public String getUserFullname() {
-		return userFullname;
+	public String getUserFullName() {
+		return userFullName;
 	}
 
-	public void setUserFullname(String userFullname) {
-		this.userFullname = userFullname;
+	public void setUserFullName(String userFullName) {
+		this.userFullName = userFullName;
 	}
 
 	public Date getPaymentDate() {
@@ -48,14 +45,17 @@ public class PaymentReport {
 		this.paymentDate = paymentDate;
 	}
 
-	public List<Integer> getInvoiceIds() {
-		return invoiceIds;
+	public Integer[] getInvoiceIds() {
+		return invoices;
 	}
 
 	public void setInvoices_string(String invoices_string) {
-		String[]invoices = invoices_string.split(",");
-		for (String i : invoices) {
-			invoiceIds.add(Integer.parseInt(i));
+		if (invoices_string != null && !invoices_string.isEmpty()) {
+			String[] invoiceIds = invoices_string.split(",");
+			this.invoices = new Integer[invoiceIds.length];
+			for (int i = 0; i < invoiceIds.length; i++) {
+				this.invoices[i] = Integer.parseInt(invoiceIds[i]);
+			}
 		}
 	}
 
