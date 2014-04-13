@@ -8,10 +8,7 @@
 		<result column="fullname" property="userFullName" jdbcType="VARCHAR" />
 		<result column="c_time" property="paymentDate" jdbcType="TIMESTAMP" />
 		<result column="amount" property="amount" jdbcType="DOUBLE" />
-		<result column="invoices" property="invoices_string"></result>
-		<!-- <collection column="p_id" property="invoiceIds" -->
-		<!-- ofType="db.billingdb.model.custom.info.PaymentInvoiceItem" resultMap="pay_inv_map" -->
-		<!-- select="getInvoices" /> -->
+		<result column="invoices" property="invoices_string" />
 		<association property="chequeInfo" column="p_id"
 			select="getPaymentCheque" autoMapping="true" resultMap="cheque_map">
 		</association>
@@ -21,12 +18,6 @@
 		<result column="chequeId" property="chequeId" jdbcType="INTEGER" />
 		<result column="bankName" property="bankName" jdbcType="VARCHAR" />
 		<result column="chequeDate" property="checqueDate" jdbcType="TIMESTAMP" />
-	</resultMap>
-
-	<resultMap id="pay_inv_map"
-		type="db.billingdb.model.custom.info.PaymentInvoiceItem">
-		<result column="inv_id" property="invoiceId" jdbcType="INTEGER" />
-		<result column="inv_amount" property="invoiceAmount" jdbcType="DOUBLE" />
 	</resultMap>
 
 	<sql id="payment_columns">
@@ -49,7 +40,16 @@
 			AND b.entity_id = #{entityId,jdbcType=INTEGER}
 		</if>
 		join contact c on c.user_id = p.user_id
-		join contact_field cf on cf.contact_id = c.id AND cf.type_id = 432
+		join contact_field cf on
+		cf.contact_id = c.id AND cf.type_id = 432
+		<if test="partnerId != 0">
+			join contact_field cf1 on cf1.contact_id = c.id AND
+			cf1.type_id = 435
+		</if>
+		<if test="salesmanId != 0">
+			join contact_field cf2 on cf2.contact_id = c.id AND
+			cf2.type_id = 443
+		</if>
 		left join payment_invoice pi on pi.payment_id = p.id
 	</sql>
 
@@ -86,58 +86,18 @@
 					#{startDate,jdbcType=TIMESTAMP}
 				</if>
 				<if test="endDate != null">
-					AND p.create_datetime &lt;
+					AND p.create_datetime &lt;=
 					#{endDate,jdbcType=TIMESTAMP}
+				</if>
+				<if test="partnerId != 0">
+					AND cf1.content = #{partnerId, jdbcType=INTEGER}
+				</if>
+				<if test="salesmanId != 0">
+					AND cf2.content = #{salesmanId, jdbcType=INTEGER}
 				</if>
 			</trim>
 		</where>
 		group by p_id
-	</select>
-
-	<select id="getChequePayments" resultMap="RM_1"
-		parameterType="db.billingdb.model.custom.PaymentCondition">
-		select
-		<include refid="payment_columns" />
-		from
-		<include refid="main_tables" />
-		<where>
-			<trim prefix="(" suffix=")" prefixOverrides="and">
-				<if test="entityId != 0">
-					AND b.entity_id = #{entityId,jdbcType=INTEGER}
-				</if>
-				AND p.user_id = b.id
-				AND p.user_id = c.user_id
-				AND cf.contact_id =
-				c.id
-				AND cf.type_id = 432 <!-- For user's full name -->
-				AND
-				<choose>
-					<when test="deleted">
-						p.deleted = 1
-					</when>
-					<otherwise>
-						p.deleted = 0
-					</otherwise>
-				</choose>
-				<if test="city != 0">
-					AND c.city = #{city,jdbcType=INTEGER}
-				</if>
-				<if test="userId != 0">
-					AND p.user_id = #{userId,jdbcType=INTEGER}
-				</if>
-				<if test="currencyId != 0">
-					AND p.currency_id = #{currencyId,jdbcType=INTEGER}
-				</if>
-				<if test="startDate != null">
-					AND p.create_datetime &gt;=
-					#{startDate,jdbcType=TIMESTAMP}
-				</if>
-				<if test="endDate != null">
-					AND p.create_datetime &lt;
-					#{endDate,jdbcType=TIMESTAMP}
-				</if>
-			</trim>
-		</where>
 	</select>
 
 	<select id="getPaymentCheque" resultMap="cheque_map"
@@ -149,5 +109,4 @@
 		WHERE
 		pic.payment_id=#{p_id}
 	</select>
-
 </mapper>

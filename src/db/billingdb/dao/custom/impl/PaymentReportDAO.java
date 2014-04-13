@@ -20,8 +20,7 @@ public class PaymentReportDAO extends BaseDAO implements PaymentReportMapper{
 		List<PaymentReport> list = null;
 		try {
 			PaymentReportMapper map = openSession.getMapper(PaymentReportMapper.class);
-			list = map.getPayments(condition);
-			
+
 			if (condition != null && condition.getVatRate() != 0) {
 				List<VatHistory> parts = getInternalSpans(condition);
 

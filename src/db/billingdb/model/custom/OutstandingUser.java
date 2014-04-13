@@ -1,33 +1,29 @@
 package db.billingdb.model.custom;
 
+import db.billingdb.model.custom.info.UserInfo;
+
 public class OutstandingUser {
-	private String username;
-	private String fullname;
-	private String city;
+	private int id;
 	private double balance;
-	
-	public String getUsername() {
-		return username;
+	private UserInfo userInfo;
+
+	public int getUserId() {
+		return id;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+
+	public void setUserId(int id) {
+		this.id = id;
 	}
-	public String getFullname() {
-		return fullname;
-	}
-	public void setFullname(String fullname) {
-		this.fullname = fullname;
-	}
-	public String getCity() {
-		return city;
-	}
-	public void setCity(String city) {
-		this.city = city;
-	}
+
 	public double getBalance() {
 		return balance;
 	}
+
 	public void setBalance(double balance) {
 		this.balance = balance;
+	}
+	
+	public UserInfo getUserInfo() {
+		return userInfo;
 	}
 }

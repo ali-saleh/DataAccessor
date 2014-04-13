@@ -26,23 +26,32 @@ import db.billingdb.model.custom.InvoiceReport;
 import db.billingdb.model.custom.Item;
 import db.billingdb.model.custom.ItemReport;
 import db.billingdb.model.custom.ItemReportCondition;
+import db.billingdb.model.custom.OutstandingUser;
+import db.billingdb.model.custom.OutstandingUserCondition;
 import db.billingdb.model.custom.PaymentCondition;
 import db.billingdb.model.custom.PaymentReport;
 import db.billingdb.model.custom.SimpleUser;
+
 public class HelloWorld {
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
-//		System.out.println(String.format("%-12s-test", "Hiell"));
-//		
-//		UserReportDAO dao = new UserReportDAO();
-//		List<Customer> x = dao.getAllCustomers();
-//		
-//		System.out.println(x.size());
-		
+
+		// OutstandingUserCondition condition = new OutstandingUserCondition();
+		// UserReportDAO dao = new UserReportDAO();
+		// List<OutstandingUser> l = dao.getOutstandingUsers(condition);
+		//
+		// System.out.println(l.size());
+		//
+		// System.out.println(String.format("%-12s-test", "Hiell"));
+		//
+		// UserReportDAO dao = new UserReportDAO();
+		// List<Customer> x = dao.getAllCustomers();
+		//
+		// System.out.println(x.size());
+
 		// InvoiceReportDAO dao = new InvoiceReportDAO();
 		// InvoiceCondition condition = new InvoiceCondition();
 		// condition.setCity(1);
@@ -65,14 +74,22 @@ public class HelloWorld {
 		// dao.getInvoicesByIDs(dao.getInvoicesIDs(condition));
 		// System.out.println("" + l.size());
 
-//		 ItemReportDAO dao = new ItemReportDAO();
-//		 ItemReportCondition condition = new ItemReportCondition();
-//		 condition.setItemId(1333);
-//		 
-//		 List<ItemReport> x = dao.getItemReport(condition);
-//		 
-//		 System.out.println(x.size());
-		//
+		ItemReportDAO dao = new ItemReportDAO();
+		ItemReportCondition condition = new ItemReportCondition();
+//		List<Integer> x = new ArrayList<Integer>();
+//		x.add(1344);
+//		x.add(1343);
+		
+		condition.setStartDate(Date.valueOf("2012-3-1"));
+		condition.setEndDate(Date.valueOf("2012-4-30"));
+		condition.setCurrencyId(12);
+		condition.setDeleted(true);
+//		condition.setItemIds(x);
+
+		List<ItemReport> l = dao.getItemReport(condition);
+
+		System.out.println(l.size());
+
 		// x.get(0);
 
 		// try {
@@ -97,18 +114,18 @@ public class HelloWorld {
 		// // }
 		// // System.out.println(l.size());
 		//
-		 PaymentCondition condition = new PaymentCondition();
-		 condition.setDeleted(false);
-		 condition.setCurrencyId(12);
-		 condition.setPaymentMethod(10);
-		 condition.setStartDate(Date.valueOf("2012-3-1"));
-		 condition.setEndDate(Date.valueOf("2012-4-30"));
-		
-		 PaymentReportDAO dao = new PaymentReportDAO();
-		 List<PaymentReport> l = dao.getPayments(condition);
-		
-		 System.out.println(l.get(0).getChequeInfo());
-		
+		// PaymentCondition condition = new PaymentCondition();
+		// condition.setDeleted(false);
+		// condition.setCurrencyId(12);
+		// condition.setPaymentMethod(10);
+		// condition.setStartDate(Date.valueOf("2012-3-1"));
+		// condition.setEndDate(Date.valueOf("2012-4-30"));
+		//
+		// PaymentReportDAO dao = new PaymentReportDAO();
+		// List<PaymentReport> l = dao.getPayments(condition);
+		//
+		// System.out.println(l.get(0).getChequeInfo());
+		//
 		// TestClass t = new TestClass();
 		// t.run_test();
 	}

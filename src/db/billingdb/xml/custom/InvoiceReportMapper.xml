@@ -105,7 +105,7 @@
 							#{startDate,jdbcType=TIMESTAMP}
 						</if>
 						<if test="endDate != null">
-							and i.create_datetime &lt;
+							and i.create_datetime &lt;=
 							#{endDate,jdbcType=TIMESTAMP}
 						</if>
 						AND
@@ -140,7 +140,6 @@
 		<if test="partnerId != 0">
 			join contact_field cf on cf.contact_id = c.id AND cf.type_id = 443
 		</if>
-
 		<if test="salesmanId != 0">
 			join contact_field cf1 on cf1.contact_id = c.id AND cf1.type_id = 444
 		</if>
@@ -161,14 +160,14 @@
 					#{startDate,jdbcType=TIMESTAMP}
 				</if>
 				<if test="endDate != null">
-					and i.create_datetime &lt;
+					and i.create_datetime &lt;=
 					#{endDate,jdbcType=TIMESTAMP}
 				</if>
-				<if test="partnerId">
-					cf.content = # {partnerId, jdbcType=INTEGER}
+				<if test="partnerId != 0">
+					AND cf.content = #{partnerId, jdbcType=INTEGER}
 				</if>
 				<if test="salesmanId != 0">
-					cf1.content = # {salesmanId, jdbcType=INTEGER}
+					AND cf1.content = #{salesmanId, jdbcType=INTEGER}
 				</if>
 				AND
 				<choose>
