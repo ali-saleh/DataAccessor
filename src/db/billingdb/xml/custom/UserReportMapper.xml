@@ -8,12 +8,12 @@
 
 	<resultMap id="UserInfoMap" type="db.billingdb.model.custom.info.UserInfo"
 		extends="SimpleUserMap">
-		<result column="city" property="city" jdbcType="INTEGER"/>
+		<result column="city" property="city" jdbcType="INTEGER" />
 		<result column="username" property="username" jdbcType="VARCHAR" />
 	</resultMap>
 
-	<resultMap id="OutstandingMap" type="db.billingdb.model.custom.OutstandingUser"
-		extends="UserInfoMap">
+	<resultMap id="OutstandingMap" type="db.billingdb.model.custom.OutstandingUser">
+		<result column="user_id" property="id" jdbcType="INTEGER"/>
 		<result column="balance" property="balance" jdbcType="DOUBLE" />
 	</resultMap>
 
@@ -48,6 +48,26 @@
 			AND c.city = #{city, jdbcType=INTEGER}
 		</if>
 		join contact_field cf on cf.contact_id = c.id AND cf.type_id = 432
+	</select>
+
+	<select id="getUserInfoByIDs" resultMap="UserInfoMap">
+		select c.user_id 'user_id',
+		cf.content 'fullname',
+		cf1.content 'username',
+		c.city
+		'city'
+		from
+		contact c
+		join contact_field cf on cf.contact_id = c.id and cf.type_id = 432
+		join
+		contact_field cf1 on cf1.contact_id = c.id and cf1.type_id = 434
+		where
+		c.user_id in
+		<foreach item="user" index="index" collection="list" open="("
+			separator="," close=")">
+			#{user}
+		</foreach>
+
 	</select>
 
 	<select id="getUsersByName" resultMap="SimpleUserMap"
@@ -86,7 +106,7 @@
 		select
 		urm.user_id
 		'user_id',
-		c.city city
+		c.city city,
 		cf2.content 'username',
 		cf1.content 'fullname'
 		from
@@ -103,27 +123,30 @@
 	<select id="getOutstandingUsers" resultMap="OutstandingMap"
 		parameterType="db.billingdb.model.custom.OutstandingUserCondition">
 		select
-		user_id,
+		cc.id user_id,
 		(invoice_balance - payment_balance)
-		balance,
-		cf.content
-		'fullname',
-		cf1.content 'username',
-		c.city 'city'
+		balance
+		<!-- cf.content -->
+		<!-- 'fullname', -->
+		<!-- cf1.content 'username', -->
+		<!-- c.city 'city' -->
 		from (
 		select
 		i.user_id
 		id,
-		sum(balance) invoice_balance, ifnull(v.payment_balance, 0)
+		sum(balance) invoice_balance,
+		ifnull(v.payment_balance, 0)
 		payment_balance
 		from
-		invoice i left join (select
+		invoice i left join
+		(select
 		user_id, sum(balance) as
 		payment_balance
 		from
 		payment
 		where
-		deleted = 0
+		deleted
+		= 0
 		and
 		user_id in (select
 		b.id
@@ -227,13 +250,15 @@
 		)
 		group by v.user_id
 		) cc
-		join contact c on c.user_id =
-		cc.id
 		<if test="city != 0">
-			AND c.city = #{city,jdbcType=INTEGER}
+			join contact c on c.user_id =
+			cc.id
+			AND c.city =
+			#{city,jdbcType=INTEGER}
 		</if>
-		join contact_field cf on cf.contact_id = c.id and cf.type_id = 432
-		join contact_field cf1 on cf1.contact_id = c.id and cf1.type_id = 434
+		<!-- join contact_field cf on cf.contact_id = c.id and cf.type_id = 432 -->
+		<!-- join contact_field cf1 on cf1.contact_id = c.id and cf1.type_id = 
+			434 -->
 		where (invoice_balance - payment_balance) > 0;
 	</select>
 </mapper>

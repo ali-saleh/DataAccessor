@@ -7,11 +7,11 @@ public class OutstandingUser {
 	private double balance;
 	private UserInfo userInfo;
 
-	public int getUserId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setUserId(int id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -25,5 +25,9 @@ public class OutstandingUser {
 	
 	public UserInfo getUserInfo() {
 		return userInfo;
+	}
+	
+	public void setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
 	}
 }

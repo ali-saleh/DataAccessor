@@ -2,7 +2,9 @@ package db.billingdb.dao.custom;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Param;
 
 import db.billingdb.model.custom.Customer;
@@ -18,4 +20,5 @@ public interface UserReportMapper {
 	List<Customer> getAllCustomers();
 	List<UserInfo> getActiveUsers(Date date);
 	List<OutstandingUser> getOutstandingUsers(OutstandingUserCondition condition);
+	List<UserInfo> getUserInfoByIDs(List<Integer> userIDs);
 }

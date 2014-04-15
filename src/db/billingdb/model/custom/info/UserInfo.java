@@ -37,5 +37,4 @@ public class UserInfo {
 	public void setCity(String city) {
 		this.city = city;
 	}
-
 }

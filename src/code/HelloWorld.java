@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -31,6 +33,7 @@ import db.billingdb.model.custom.OutstandingUserCondition;
 import db.billingdb.model.custom.PaymentCondition;
 import db.billingdb.model.custom.PaymentReport;
 import db.billingdb.model.custom.SimpleUser;
+import db.billingdb.model.custom.info.UserInfo;
 
 public class HelloWorld {
 
@@ -39,11 +42,24 @@ public class HelloWorld {
 	 */
 	public static void main(String[] args) {
 
-		// OutstandingUserCondition condition = new OutstandingUserCondition();
-		// UserReportDAO dao = new UserReportDAO();
-		// List<OutstandingUser> l = dao.getOutstandingUsers(condition);
-		//
-		// System.out.println(l.size());
+		OutstandingUserCondition condition = new OutstandingUserCondition();
+		UserReportDAO dao = new UserReportDAO();
+		List<OutstandingUser> l = dao.getOutstandingUsers(condition);
+		
+		Map<Integer, OutstandingUser> m = new HashMap<Integer, OutstandingUser>();
+		for (OutstandingUser outstandingUser : l) {
+			m.put(outstandingUser.getId(), outstandingUser);
+		}
+		
+		List <Integer> lst = new ArrayList<Integer>();
+		lst.addAll(m.keySet());
+		List<UserInfo> infos = dao.getUserInfoByIDs( lst);
+		
+		for (UserInfo userInfo : infos) {
+			m.get(userInfo.getId()).setUserInfo(userInfo);
+		}
+		
+		System.out.println(l.size());
 		//
 		// System.out.println(String.format("%-12s-test", "Hiell"));
 		//
@@ -74,21 +90,21 @@ public class HelloWorld {
 		// dao.getInvoicesByIDs(dao.getInvoicesIDs(condition));
 		// System.out.println("" + l.size());
 
-		ItemReportDAO dao = new ItemReportDAO();
-		ItemReportCondition condition = new ItemReportCondition();
-//		List<Integer> x = new ArrayList<Integer>();
-//		x.add(1344);
-//		x.add(1343);
-		
-		condition.setStartDate(Date.valueOf("2012-3-1"));
-		condition.setEndDate(Date.valueOf("2012-4-30"));
-		condition.setCurrencyId(12);
-		condition.setDeleted(true);
-//		condition.setItemIds(x);
-
-		List<ItemReport> l = dao.getItemReport(condition);
-
-		System.out.println(l.size());
+		// ItemReportDAO dao = new ItemReportDAO();
+		// ItemReportCondition condition = new ItemReportCondition();
+		// // List<Integer> x = new ArrayList<Integer>();
+		// // x.add(1344);
+		// // x.add(1343);
+		//
+		// condition.setStartDate(Date.valueOf("2012-3-1"));
+		// condition.setEndDate(Date.valueOf("2012-4-30"));
+		// condition.setCurrencyId(12);
+		// // condition.setDeleted(true);
+		// // condition.setItemIds(x);
+		//
+		// List<ItemReport> l = dao.getItemReport(condition);
+		//
+		// System.out.println(l.size());
 
 		// x.get(0);
 
