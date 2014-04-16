@@ -42,31 +42,31 @@ public class HelloWorld {
 	 */
 	public static void main(String[] args) {
 
-		OutstandingUserCondition condition = new OutstandingUserCondition();
-		UserReportDAO dao = new UserReportDAO();
-		List<OutstandingUser> l = dao.getOutstandingUsers(condition);
-		
-		Map<Integer, OutstandingUser> m = new HashMap<Integer, OutstandingUser>();
-		for (OutstandingUser outstandingUser : l) {
-			m.put(outstandingUser.getId(), outstandingUser);
-		}
-		
-		List <Integer> lst = new ArrayList<Integer>();
-		lst.addAll(m.keySet());
-		List<UserInfo> infos = dao.getUserInfoByIDs( lst);
-		
-		for (UserInfo userInfo : infos) {
-			m.get(userInfo.getId()).setUserInfo(userInfo);
-		}
-		
-		System.out.println(l.size());
+//		OutstandingUserCondition condition = new OutstandingUserCondition();
+//		UserReportDAO dao = new UserReportDAO();
+//		List<OutstandingUser> l = dao.getOutstandingUsers(condition);
+//		
+//		Map<Integer, OutstandingUser> m = new HashMap<Integer, OutstandingUser>();
+//		for (OutstandingUser outstandingUser : l) {
+//			m.put(outstandingUser.getId(), outstandingUser);
+//		}
+//		
+//		List <Integer> lst = new ArrayList<Integer>();
+//		lst.addAll(m.keySet());
+//		List<UserInfo> infos = dao.getUserInfoByIDs( lst);
+//		
+//		for (UserInfo userInfo : infos) {
+//			m.get(userInfo.getId()).setUserInfo(userInfo);
+//		}
+//		
+//		System.out.println(l.size());
 		//
 		// System.out.println(String.format("%-12s-test", "Hiell"));
 		//
-		// UserReportDAO dao = new UserReportDAO();
-		// List<Customer> x = dao.getAllCustomers();
-		//
-		// System.out.println(x.size());
+//		 UserReportDAO dao = new UserReportDAO();
+//		 List<Customer> x = dao.getAllCustomers();
+//		
+//		 System.out.println(x.size());
 
 		// InvoiceReportDAO dao = new InvoiceReportDAO();
 		// InvoiceCondition condition = new InvoiceCondition();
@@ -144,5 +144,11 @@ public class HelloWorld {
 		//
 		// TestClass t = new TestClass();
 		// t.run_test();
+		
+		ItemReportDAO dao = new ItemReportDAO();
+		
+		List<Item> x = dao.listItems();
+		
+		System.out.println(x.size());
 	}
 }

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="db.billingdb.dao.custom.ItemReportMapper">
-<!-- 	<resultMap id="ItemMap" type="db.billingdb.model.custom.Item"> -->
-<!-- 		<result column="i_id" property="id" jdbcType="INTEGER" /> -->
-<!-- 		<result column="i_internal" property="internal_number" -->
-<!-- 			jdbcType="VARCHAR" /> -->
-<!-- 		<result column="p_price" property="price" jdbcType="DOUBLE" /> -->
-<!-- 		<result column="c_code" property="code" jdbcType="VARCHAR" /> -->
-<!-- 		<result column="d_content" property="desc" jdbcType="VARCHAR" /> -->
-<!-- 	</resultMap> -->
+	<resultMap id="ItemMap" type="db.billingdb.model.custom.Item">
+		<result column="i_id" property="id" jdbcType="INTEGER" />
+		<result column="i_internal" property="internal_number"
+			jdbcType="VARCHAR" />
+		<result column="p_price" property="price" jdbcType="DOUBLE" />
+		<result column="c_code" property="code" jdbcType="VARCHAR" />
+		<result column="d_content" property="desc" jdbcType="VARCHAR" />
+	</resultMap>
 
 	<resultMap id="ItemReportMap" type="db.billingdb.model.custom.ItemReport">
 		<result column="item_id" property="itemId" jdbcType="INTEGER" />
@@ -33,19 +33,19 @@
 		international_description d
 	</sql>
 
-<!-- 	<select id="listItems" resultMap="ItemMap"> -->
-<!-- 		SELECT -->
-<!-- 		<include refid="item_columns" /> -->
-<!-- 		FROM -->
-<!-- 		<include refid="item_tables" /> -->
-<!-- 		WHERE -->
-<!-- 		i.id=p.item_id -->
-<!-- 		AND p.currency_id=c.id -->
-<!-- 		AND i.deleted=0 -->
-<!-- 		AND -->
-<!-- 		i.id=d.foreign_id -->
-<!-- 		AND d.table_id=14 -->
-<!-- 	</select> -->
+	<select id="listItems" resultMap="ItemMap">
+		SELECT
+		<include refid="item_columns" />
+		FROM
+		<include refid="item_tables" />
+		WHERE
+		i.id=p.item_id
+		AND p.currency_id=c.id
+		AND i.deleted=0
+		AND
+		i.id=d.foreign_id
+		AND d.table_id=14
+	</select>
 
 	<sql id="item_report_columns">
 		rpt.item_id item_id,

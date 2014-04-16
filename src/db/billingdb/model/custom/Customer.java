@@ -2,6 +2,7 @@ package db.billingdb.model.custom;
 
 public class Customer {
 	private int id;
+	private String city;
 	private String username;
 	private String fullname;
 
@@ -11,6 +12,14 @@ public class Customer {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 	public String getUsername() {
@@ -31,7 +40,7 @@ public class Customer {
 
 	public String getCombinedName() {
 		if (username != null && !username.isEmpty() && fullname != null && !fullname.isEmpty()) {
-			return String.format("%12s-%s", username, fullname);
+			return String.format("%12s - %s", username, fullname);
 		}
 
 		return null;
