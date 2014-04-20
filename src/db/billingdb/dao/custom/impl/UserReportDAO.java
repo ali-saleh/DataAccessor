@@ -11,6 +11,7 @@ import db.billingdb.model.custom.Customer;
 import db.billingdb.model.custom.OutstandingUser;
 import db.billingdb.model.custom.OutstandingUserCondition;
 import db.billingdb.model.custom.SimpleUser;
+import db.billingdb.model.custom.UserPaymentCondition;
 import db.billingdb.model.custom.info.UserInfo;
 
 public class UserReportDAO extends BaseDAO implements UserReportMapper {
@@ -32,13 +33,13 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 	}
 
 	@Override
-	public List<SimpleUser> getDistibutorListByCity(int city) {
+	public List<SimpleUser> getPartnerListByCity(int city) {
 		SqlSession openSession = _session.openSession();
 		List<SimpleUser> res = null;
 		try {
 			UserReportMapper map = openSession
 					.getMapper(UserReportMapper.class);
-			res = map.getDistibutorListByCity(city);
+			res = map.getPartnerListByCity(city);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -117,6 +118,22 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 			UserReportMapper map = openSession
 					.getMapper(UserReportMapper.class);
 			res = map.getUserInfoByIDs(userIDs);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			openSession.close();
+		}
+		return res;
+	}
+	
+	@Override
+	public List<OutstandingUser> getUserPayments(UserPaymentCondition condition) {
+		SqlSession openSession = _session.openSession();
+		List<OutstandingUser> res = null;
+		try {
+			UserReportMapper map = openSession
+					.getMapper(UserReportMapper.class);
+			res = map.getUserPayments(condition);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

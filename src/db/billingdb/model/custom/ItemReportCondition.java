@@ -8,7 +8,6 @@ import db.billingdb.model.custom.interfaces.HasDateLimit;
 
 public class ItemReportCondition extends BaseCondition implements HasDateLimit {
 	private List<Integer> itemIds;
-	private int itemId = 0;
 	private int userId = 0;
 	private Date startDate = null;
 	private Date endDate = null;
@@ -23,14 +22,6 @@ public class ItemReportCondition extends BaseCondition implements HasDateLimit {
 
 	public void setItemIds(List<Integer> itemIds) {
 		this.itemIds = itemIds;
-	}
-	
-	public int getItemId() {
-		return itemId;
-	}
-
-	public void setItemId(int itemId) {
-		this.itemId = itemId;
 	}
 
 	public int getUserId() {
@@ -99,7 +90,6 @@ public class ItemReportCondition extends BaseCondition implements HasDateLimit {
 		for(Integer i: itemIds) {
 			c.itemIds.add(i);
 		}
-		c.itemId = itemId;
 		c.userId = userId;
 		c.startDate = startDate;
 		c.endDate = endDate;

@@ -13,6 +13,8 @@ import db.billingdb.model.custom.InvoiceReport;
 import db.billingdb.model.custom.Item;
 import db.billingdb.model.custom.ItemReport;
 import db.billingdb.model.custom.ItemReportCondition;
+import db.billingdb.model.custom.UserTypeCondition;
+import db.billingdb.model.custom.UserTypeReport;
 import db.logindb.model.VatHistory;
 
 public class ItemReportDAO extends BaseDAO implements ItemReportMapper {
@@ -69,6 +71,24 @@ public class ItemReportDAO extends BaseDAO implements ItemReportMapper {
 			} else { // If no vat calculation was needed
 				list = map.getItemReport(condition);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			openSession.close();
+		}
+		return list;
+	}
+
+	
+	@Override
+	public List<UserTypeReport> getUserTypeReport(UserTypeCondition condition) {
+		SqlSession openSession = _session.openSession();
+		List<UserTypeReport> list = null;
+		try {
+			ItemReportMapper map = openSession
+					.getMapper(ItemReportMapper.class);
+			
+			list = map.getUserTypeReport(condition);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

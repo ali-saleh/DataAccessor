@@ -14,3 +14,5 @@ and rad.value like '%2020%';
 
 select * from radius.radcheck rad where rad.Attribute = 'Expiration'
 and rad.value like '%2023%';
+
+

@@ -11,14 +11,16 @@ import db.billingdb.model.custom.Customer;
 import db.billingdb.model.custom.OutstandingUser;
 import db.billingdb.model.custom.OutstandingUserCondition;
 import db.billingdb.model.custom.SimpleUser;
+import db.billingdb.model.custom.UserPaymentCondition;
 import db.billingdb.model.custom.info.UserInfo;
 
 public interface UserReportMapper {
 	List<SimpleUser> getSalesmenListByCity(int city);
-	List<SimpleUser> getDistibutorListByCity(int city);
+	List<SimpleUser> getPartnerListByCity(int city);
 	List<OutstandingUser> getUsersByName(@Param("name")String name, @Param("city")int city);
 	List<Customer> getAllCustomers();
 	List<UserInfo> getActiveUsers(Date date);
 	List<OutstandingUser> getOutstandingUsers(OutstandingUserCondition condition);
 	List<UserInfo> getUserInfoByIDs(List<Integer> userIDs);
+	List<OutstandingUser> getUserPayments(UserPaymentCondition condition);
 }

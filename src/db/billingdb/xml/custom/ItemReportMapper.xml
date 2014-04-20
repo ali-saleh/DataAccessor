@@ -18,6 +18,13 @@
 		<result column="amount" property="amount" jdbcType="DOUBLE" />
 	</resultMap>
 
+	<resultMap id="UserTypeMap" type="db.billingdb.model.custom.UserTypeReport">
+		<result column="item_id" property="itemId" jdbcType="INTEGER" />
+		<result column="itemDesc" property="itemDescription" jdbcType="VARCHAR" />
+		<result column="userType" property="userType" jdbcType="INTEGER" />
+		<result column="count" property="count" jdbcType="INTEGER" />
+	</resultMap>
+
 	<sql id="item_columns">
 		i.id as i_id,
 		i.internal_number as i_internal,
@@ -96,7 +103,7 @@
 		)
 		WHERE
 		<if test="itemIds != null and itemIds.size > 0">
-			i_0.item_id in 
+			i_0.item_id in
 			<foreach item="item" index="index" collection="itemIds" open="("
 				separator="," close=")">
 				#{item}
@@ -153,5 +160,69 @@
 		i_0.item_id) rpt
 		group by
 		rpt.item_id;
+	</select>
+
+	<select id="getUserTypeReport" parameterType="db.billingdb.model.custom.UserTypeCondition"
+		resultMap="UserTypeMap">
+		select
+		il.item_id 'itemId',
+		il.description 'itemDesc',
+		cf.content
+		'userType',
+		count(i.id) 'count'
+		from
+		invoice i
+		join invoice_line il on
+		il.invoice_id = i.id
+		join user_role_map urm on urm.user_id = i.user_id
+		AND urm.role_id = 5
+		join contact c on c.user_id=urm.user_id
+		AND
+		c.deleted=0
+		<if test="city != 0">
+			AND c.city = #{city, jdbcType=INTEGER}
+		</if>
+		join contact_field cf on cf.contact_id
+		= c.id AND cf.type_id = 441
+		<if test="partnerId != 0">
+			join
+			contact_field cf3 on
+			cf3.contact_id = c.id
+			AND
+			cf3.type_id = 435
+		</if>
+		<if test="salesmanId != 0">
+			join
+			contact_field cf4 on
+			cf4.contact_id = c.id
+			AND
+			cf4.content = 443
+		</if>
+		<if
+			test="endDate != null or endDate != null or partnerId != 0 or salesmanId != 0">
+			<where>
+				<trim prefix="(" suffix=")" prefixOverrides="and">
+					<if test="startDate != null">
+						and i.create_datetime &gt;=
+						#{startDate,jdbcType=TIMESTAMP}
+					</if>
+					<if test="endDate != null">
+						and i.create_datetime &lt;=
+						#{endDate,jdbcType=TIMESTAMP}
+					</if>
+					<if test="partnerId != 0">
+						AND
+						cf3.content = #{partnerId, jdbcType=INTEGER}
+					</if>
+					<if test="salesmanId != 0">
+						AND
+						cf4.content = #{salesmanId, jdbcType=INTEGER}
+					</if>
+				</trim>
+			</where>
+		</if>
+
+		group by il.item_id, cf.content
+		order by il.item_id, cf.content
 	</select>
 </mapper>

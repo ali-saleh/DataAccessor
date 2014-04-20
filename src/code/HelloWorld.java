@@ -33,6 +33,9 @@ import db.billingdb.model.custom.OutstandingUserCondition;
 import db.billingdb.model.custom.PaymentCondition;
 import db.billingdb.model.custom.PaymentReport;
 import db.billingdb.model.custom.SimpleUser;
+import db.billingdb.model.custom.UserPaymentCondition;
+import db.billingdb.model.custom.UserTypeCondition;
+import db.billingdb.model.custom.UserTypeReport;
 import db.billingdb.model.custom.info.UserInfo;
 
 public class HelloWorld {
@@ -42,31 +45,36 @@ public class HelloWorld {
 	 */
 	public static void main(String[] args) {
 
-//		OutstandingUserCondition condition = new OutstandingUserCondition();
-//		UserReportDAO dao = new UserReportDAO();
-//		List<OutstandingUser> l = dao.getOutstandingUsers(condition);
-//		
-//		Map<Integer, OutstandingUser> m = new HashMap<Integer, OutstandingUser>();
-//		for (OutstandingUser outstandingUser : l) {
-//			m.put(outstandingUser.getId(), outstandingUser);
-//		}
-//		
-//		List <Integer> lst = new ArrayList<Integer>();
-//		lst.addAll(m.keySet());
-//		List<UserInfo> infos = dao.getUserInfoByIDs( lst);
-//		
-//		for (UserInfo userInfo : infos) {
-//			m.get(userInfo.getId()).setUserInfo(userInfo);
-//		}
-//		
-//		System.out.println(l.size());
+		// OutstandingUserCondition condition = new OutstandingUserCondition();
+		// UserReportDAO dao = new UserReportDAO();
+		// List<OutstandingUser> l = dao.getOutstandingUsers(condition);
+		//
+		// Map<Integer, OutstandingUser> m = new HashMap<Integer,
+		// OutstandingUser>();
+		// for (OutstandingUser outstandingUser : l) {
+		// m.put(outstandingUser.getId(), outstandingUser);
+		// }
+		//
+		// List <Integer> lst = new ArrayList<Integer>();
+		// lst.addAll(m.keySet());
+		// List<UserInfo> infos = dao.getUserInfoByIDs( lst);
+		//
+		// for (UserInfo userInfo : infos) {
+		// m.get(userInfo.getId()).setUserInfo(userInfo);
+		// }
+		//
+		// System.out.println(l.size());
 		//
 		// System.out.println(String.format("%-12s-test", "Hiell"));
+		// \
+
+		// UserReportDAO dao = new UserReportDAO();
 		//
-//		 UserReportDAO dao = new UserReportDAO();
-//		 List<Customer> x = dao.getAllCustomers();
-//		
-//		 System.out.println(x.size());
+		// UserPaymentCondition condition = new UserPaymentCondition();
+		// condition.setPartnerId(2160);
+		// List<OutstandingUser> x = dao.getUserPayments(condition);
+		//
+		// System.out.println(x.size());
 
 		// InvoiceReportDAO dao = new InvoiceReportDAO();
 		// InvoiceCondition condition = new InvoiceCondition();
@@ -144,11 +152,46 @@ public class HelloWorld {
 		//
 		// TestClass t = new TestClass();
 		// t.run_test();
-		
+
 		ItemReportDAO dao = new ItemReportDAO();
+		UserTypeCondition condition = new UserTypeCondition();
+		List<UserTypeReport> l = dao.getUserTypeReport(null);
 		
-		List<Item> x = dao.listItems();
-		
-		System.out.println(x.size());
+		try {
+			Map<Integer, CombinedUserTypeReport> m = extractUserTypeReport(l);
+			System.out.println(m.size());
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+	}
+
+	private static Map<Integer, CombinedUserTypeReport> extractUserTypeReport(List<UserTypeReport> reportList) throws Exception{
+		if (reportList == null || reportList.size() <= 0) {
+			return null;
+		}
+
+		Map<Integer, CombinedUserTypeReport> map = new HashMap<Integer, CombinedUserTypeReport>();
+
+		for (UserTypeReport userTypeReport : reportList) {
+			if (!map.containsKey(userTypeReport.getItemId())) {
+				CombinedUserTypeReport r = new CombinedUserTypeReport();
+				r.setItemId(userTypeReport.getItemId());
+				r.setItemDesc(userTypeReport.getItemDescription());
+				map.put(userTypeReport.getItemId(), r);
+			}
+
+			switch (userTypeReport.getUserType()) {
+			case 0:
+				map.get(userTypeReport.getItemId()).setNormalUserCount(userTypeReport.getCount());
+				break;
+			case 1:
+				map.get(userTypeReport.getItemId()).setCompanyCount(userTypeReport.getCount());
+				break;
+			default:
+				throw new Exception("Unknown user type found for item " + userTypeReport.getItemId());
+			}
+		}
+		return map;
 	}
 }

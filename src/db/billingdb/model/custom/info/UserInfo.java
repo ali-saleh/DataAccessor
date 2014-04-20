@@ -1,9 +1,12 @@
 package db.billingdb.model.custom.info;
 
+import java.util.Date;
+
 public class UserInfo {
 	private int id;
 	private String username;
 	private String fullname;
+	private Date installationDate;
 	private String city;
 
 	public int getId() {
@@ -28,6 +31,14 @@ public class UserInfo {
 
 	public void setFullname(String fullname) {
 		this.fullname = fullname;
+	}
+
+	public Date getInstallationDate() {
+		return installationDate;
+	}
+
+	public void setInstallationDate(Date installationDate) {
+		this.installationDate = installationDate;
 	}
 
 	public String getCity() {

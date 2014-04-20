@@ -9,12 +9,20 @@
 	<resultMap id="UserInfoMap" type="db.billingdb.model.custom.info.UserInfo"
 		extends="SimpleUserMap">
 		<result column="city" property="city" jdbcType="INTEGER" />
+		<result column="install_time" property="installationDate"
+			jdbcType="TIMESTAMP" />
 		<result column="username" property="username" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<resultMap id="OutstandingMap" type="db.billingdb.model.custom.OutstandingUser">
-		<result column="user_id" property="id" jdbcType="INTEGER"/>
+		<result column="user_id" property="id" jdbcType="INTEGER" />
 		<result column="balance" property="balance" jdbcType="DOUBLE" />
+	</resultMap>
+
+	<resultMap id="UserPaymentsMap" type="db.billingdb.model.custom.OutstandingUser">
+		<result column="user_id" property="id" jdbcType="INTEGER" />
+		<result column="payments" property="balance" jdbcType="DOUBLE" />
+		<association property="userInfo" resultMap="UserInfoMap" />
 	</resultMap>
 
 	<resultMap id="CustomerMap" type="db.billingdb.model.custom.Customer"
@@ -35,7 +43,7 @@
 		join contact_field cf on cf.contact_id = c.id AND cf.type_id = 432
 	</select>
 
-	<select id="getDistibutorList" resultMap="SimpleUserMap"
+	<select id="getPartnerList" resultMap="SimpleUserMap"
 		parameterType="int">
 		select
 		urm.user_id 'user_id',
@@ -53,13 +61,21 @@
 	<select id="getUserInfoByIDs" resultMap="UserInfoMap">
 		select c.user_id 'user_id',
 		cf.content 'fullname',
-		cf1.content 'username',
+		cf1.content
+		'username',
+		cf2.content 'install_time'
 		c.city 'city'
 		from
 		contact c
-		join contact_field cf on cf.contact_id = c.id and cf.type_id = 432
 		join
-		contact_field cf1 on cf1.contact_id = c.id and cf1.type_id = 434
+		contact_field cf on
+		cf.contact_id = c.id and cf.type_id = 432
+		join
+		contact_field cf1 on
+		cf1.contact_id = c.id and cf1.type_id = 434
+		join
+		contact_field cf2 on
+		cf2.contact_id = c.id and cf2.type_id = 436
 		where
 		c.user_id in
 		<foreach item="user" index="index" collection="list" open="("
@@ -125,10 +141,6 @@
 		cc.id user_id,
 		(invoice_balance - payment_balance)
 		balance
-		<!-- cf.content -->
-		<!-- 'fullname', -->
-		<!-- cf1.content 'username', -->
-		<!-- c.city 'city' -->
 		from (
 		select
 		i.user_id
@@ -255,9 +267,93 @@
 			AND c.city =
 			#{city,jdbcType=INTEGER}
 		</if>
-		<!-- join contact_field cf on cf.contact_id = c.id and cf.type_id = 432 -->
-		<!-- join contact_field cf1 on cf1.contact_id = c.id and cf1.type_id = 
-			434 -->
 		where (invoice_balance - payment_balance) > 0;
 	</select>
+
+	<select id="getUserPayments" resultMap="UserPaymentsMap"
+		parameterType="db.billingdb.model.custom.UserPaymentCondition">
+		select
+		c.user_id 'user_id',
+		cf.content 'fullname',
+		cf1.content
+		'username',
+		STR_TO_DATE(cf2.content, '%m/%d/%y') 'install_time',
+		c.city 'city',
+		(sum(i.total)
+		<if test="vatRate != 0">
+			* (1.0 - #{vatRate,jdbcType=DOUBLE})
+		</if>
+		) 'balance'
+		from
+		contact c
+		join
+		invoice i ON i.user_id = c.user_id
+		AND
+		i.deleted = 0
+		AND
+		i.is_review = 0
+		AND i.status_id = 27
+		<if test="currencyId != 0">
+			AND i.currency_id = #{currencyId,jdbcType=INTEGER}
+		</if>
+		<if test="startDate != null">
+			and i.create_datetime &gt;=
+			#{startDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="endDate != null">
+			and i.create_datetime &lt;=
+			#{endDate,jdbcType=TIMESTAMP}
+		</if>
+		join
+		contact_field cf ON
+		cf.contact_id = c.id
+		AND cf.type_id = 432
+		join
+		contact_field cf1 ON
+		cf1.contact_id = c.id
+		AND cf1.type_id = 434
+		join
+		contact_field cf2 ON
+		cf2.contact_id = c.id
+		AND cf2.type_id = 436
+		<if test="partnerId != 0">
+			join
+			contact_field cf3 on
+			cf3.contact_id = c.id
+			AND
+			cf3.type_id = 435
+		</if>
+		<if test="salesmanId != 0">
+			join
+			contact_field cf4 on
+			cf4.contact_id = c.id
+			AND
+			cf4.content = 443
+		</if>
+		<if test="city != 0 or partnerId != 0 or salesmanId != 0">
+			<where>
+				<trim prefix="(" suffix=")" prefixOverrides="and">
+					<if test="city != 0">
+						AND c.city = #{city, jdbcType=INTEGER}
+					</if>
+					<if test="partnerId != 0">
+						AND
+						cf3.content = #{partnerId, jdbcType=INTEGER}
+					</if>
+					<if test="salesmanId != 0">
+						AND
+						cf4.content = #{salesmanId, jdbcType=INTEGER}
+					</if>
+				</trim>
+			</where>
+		</if>
+		group by c.user_id
+		order
+		by
+		sum(i.total)
+		<if test="isDescending">
+			desc
+		</if>
+	</select>
+	
 </mapper>
