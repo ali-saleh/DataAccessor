@@ -1,6 +1,7 @@
 package db.billingdb.dao.custom.impl;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -125,7 +126,24 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 		}
 		return res;
 	}
-	
+
+	@Override
+	public UserInfo getUserInfoByID(int userID) {
+		List<Integer> lst = new ArrayList<Integer>();
+		
+		lst.add(userID);
+		
+		List<UserInfo> infos = this.getUserInfoByIDs(lst);
+		
+		if(infos == null || infos.size() < 1) {
+			// Some error 
+			return null;
+		}
+		
+		// Always returning first element. (There shouldn't be more)
+		return infos.get(0);
+	}
+
 	@Override
 	public List<OutstandingUser> getUserPayments(UserPaymentCondition condition) {
 		SqlSession openSession = _session.openSession();

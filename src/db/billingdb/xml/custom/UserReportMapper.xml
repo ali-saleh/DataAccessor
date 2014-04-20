@@ -63,7 +63,7 @@
 		cf.content 'fullname',
 		cf1.content
 		'username',
-		cf2.content 'install_time'
+		STR_TO_DATE(cf2.content, '%m/%d/%y') 'install_time',
 		c.city 'city'
 		from
 		contact c

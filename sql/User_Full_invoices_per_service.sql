@@ -39,7 +39,7 @@ where
         AND cf.contact_id = c.id
         AND il.item_id = it.id
 		AND it.id=d.foreign_id
-		AND d.table_id=14	#for items' table
+		AND d.table_id=14	#for items table
         AND cf.type_id = 432
         AND c.user_id = 500	#example user id
 group by il.item_id;

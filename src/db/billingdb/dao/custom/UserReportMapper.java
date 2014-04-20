@@ -22,5 +22,8 @@ public interface UserReportMapper {
 	List<UserInfo> getActiveUsers(Date date);
 	List<OutstandingUser> getOutstandingUsers(OutstandingUserCondition condition);
 	List<UserInfo> getUserInfoByIDs(List<Integer> userIDs);
+	
+	//Note: not implemented on MyBatis XML configuration
+	UserInfo getUserInfoByID(int userID);
 	List<OutstandingUser> getUserPayments(UserPaymentCondition condition);
 }

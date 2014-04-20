@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="Cp1256" standalone="no"?>
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
 <jardesc>
     <jar path="Global_Reports/WebContent/WEB-INF/lib/DataAccessor.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/DataAccessor/JarGen.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
@@ -11,13 +11,11 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <file path="/DataAccessor/.gitignore"/>
-        <folder path="/DataAccessor/lib"/>
-        <file path="/DataAccessor/.gitattributes"/>
         <file path="/DataAccessor/.classpath"/>
         <folder path="/DataAccessor/sql"/>
         <javaElement handleIdentifier="=DataAccessor/conf"/>
         <file path="/DataAccessor/.project"/>
         <javaElement handleIdentifier="=DataAccessor/src"/>
+        <folder path="/DataAccessor/lib"/>
     </selectedElements>
 </jardesc>
