@@ -34,13 +34,13 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 	}
 
 	@Override
-	public List<SimpleUser> getPartnerListByCity(int city) {
+	public List<SimpleUser> getPartnersListByCity(int city) {
 		SqlSession openSession = _session.openSession();
 		List<SimpleUser> res = null;
 		try {
 			UserReportMapper map = openSession
 					.getMapper(UserReportMapper.class);
-			res = map.getPartnerListByCity(city);
+			res = map.getPartnersListByCity(city);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

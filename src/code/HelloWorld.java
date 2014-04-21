@@ -46,9 +46,9 @@ public class HelloWorld {
 	public static void main(String[] args) {
 
 		// OutstandingUserCondition condition = new OutstandingUserCondition();
-		// UserReportDAO dao = new UserReportDAO();
-		// List<OutstandingUser> l = dao.getOutstandingUsers(condition);
-		//
+		 UserReportDAO dao = new UserReportDAO();
+		 List<SimpleUser> l = dao.getPartnersListByCity(0);
+		System.out.println();
 		// Map<Integer, OutstandingUser> m = new HashMap<Integer,
 		// OutstandingUser>();
 		// for (OutstandingUser outstandingUser : l) {
@@ -153,17 +153,17 @@ public class HelloWorld {
 		// TestClass t = new TestClass();
 		// t.run_test();
 
-		ItemReportDAO dao = new ItemReportDAO();
-		UserTypeCondition condition = new UserTypeCondition();
-		List<UserTypeReport> l = dao.getUserTypeReport(null);
-		
-		try {
-			Map<Integer, CombinedUserTypeReport> m = extractUserTypeReport(l);
-			System.out.println(m.size());
-		} catch (Exception e) {
-			
-			e.printStackTrace();
-		}
+//		ItemReportDAO dao = new ItemReportDAO();
+//		UserTypeCondition condition = new UserTypeCondition();
+//		List<UserTypeReport> l = dao.getUserTypeReport(null);
+//		
+//		try {
+//			Map<Integer, CombinedUserTypeReport> m = extractUserTypeReport(l);
+//			System.out.println(m.size());
+//		} catch (Exception e) {
+//			
+//			e.printStackTrace();
+//		}
 	}
 
 	private static Map<Integer, CombinedUserTypeReport> extractUserTypeReport(List<UserTypeReport> reportList) throws Exception{

@@ -28,22 +28,7 @@
 	<resultMap id="CustomerMap" type="db.billingdb.model.custom.Customer"
 		extends="UserInfoMap" />
 
-	<select id="getSalesmenList" resultMap="SimpleUserMap"
-		parameterType="int">
-		select
-		urm.user_id 'user_id',
-		cf.content 'fullname'
-		from
-		user_role_map urm
-		join contact c on urm.role_id = 9 AND c.user_id = urm.user_id AND
-		c.deleted = false
-		<if test="city != 0">
-			AND c.city = #{city, jdbcType=INTEGER}
-		</if>
-		join contact_field cf on cf.contact_id = c.id AND cf.type_id = 432
-	</select>
-
-	<select id="getPartnerList" resultMap="SimpleUserMap"
+	<select id="getPartnersListByCity" resultMap="SimpleUserMap"
 		parameterType="int">
 		select
 		urm.user_id 'user_id',
@@ -51,10 +36,25 @@
 		from
 		user_role_map urm
 		join contact c on urm.role_id = 4 AND c.user_id = urm.user_id AND
-		c.deleted = false
-		<if test="city != 0">
-			AND c.city = #{city, jdbcType=INTEGER}
-		</if>
+		c.deleted = 0
+<!-- 		<if test="city != 0"> -->
+<!-- 			AND c.city = #{city, jdbcType=INTEGER} -->
+<!-- 		</if> -->
+		join contact_field cf on cf.contact_id = c.id AND cf.type_id = 432
+	</select>
+
+	<select id="getSalesmenListByCity" resultMap="SimpleUserMap"
+		parameterType="int">
+		select
+		urm.user_id 'user_id',
+		cf.content 'fullname'
+		from
+		user_role_map urm
+		join contact c on urm.role_id = 9 AND c.user_id = urm.user_id AND
+		c.deleted = 0
+<!-- 		<if test="city != 0"> -->
+<!-- 			AND c.city = #{city, jdbcType=INTEGER} -->
+<!-- 		</if> -->
 		join contact_field cf on cf.contact_id = c.id AND cf.type_id = 432
 	</select>
 
@@ -64,25 +64,28 @@
 		cf1.content
 		'username',
 		STR_TO_DATE(cf2.content, '%m/%d/%y') 'install_time',
-		c.city 'city'
+		c.city
+		'city'
 		from
 		contact c
 		join
 		contact_field cf on
-		cf.contact_id = c.id and cf.type_id = 432
+		cf.contact_id = c.id and
+		cf.type_id = 432
 		join
 		contact_field cf1 on
-		cf1.contact_id = c.id and cf1.type_id = 434
+		cf1.contact_id = c.id and
+		cf1.type_id = 434
 		join
 		contact_field cf2 on
-		cf2.contact_id = c.id and cf2.type_id = 436
+		cf2.contact_id = c.id and
+		cf2.type_id = 436
 		where
 		c.user_id in
 		<foreach item="user" index="index" collection="list" open="("
 			separator="," close=")">
 			#{user}
 		</foreach>
-
 	</select>
 
 	<select id="getUsersByName" resultMap="SimpleUserMap"
@@ -278,7 +281,8 @@
 		cf1.content
 		'username',
 		STR_TO_DATE(cf2.content, '%m/%d/%y') 'install_time',
-		c.city 'city',
+		c.city
+		'city',
 		(sum(i.total)
 		<if test="vatRate != 0">
 			* (1.0 - #{vatRate,jdbcType=DOUBLE})
@@ -355,5 +359,5 @@
 			desc
 		</if>
 	</select>
-	
+
 </mapper>

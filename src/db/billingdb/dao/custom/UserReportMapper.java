@@ -15,8 +15,8 @@ import db.billingdb.model.custom.UserPaymentCondition;
 import db.billingdb.model.custom.info.UserInfo;
 
 public interface UserReportMapper {
-	List<SimpleUser> getSalesmenListByCity(int city);
-	List<SimpleUser> getPartnerListByCity(int city);
+	List<SimpleUser> getSalesmenListByCity(@Param("city")int city);
+	List<SimpleUser> getPartnersListByCity(@Param("city")int city);
 	List<OutstandingUser> getUsersByName(@Param("name")String name, @Param("city")int city);
 	List<Customer> getAllCustomers();
 	List<UserInfo> getActiveUsers(Date date);
