@@ -6,8 +6,6 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 
 import db.billingdb.dao.custom.PaymentReportMapper;
-import db.billingdb.model.custom.ItemReport;
-import db.billingdb.model.custom.ItemReportCondition;
 import db.billingdb.model.custom.PaymentCondition;
 import db.billingdb.model.custom.PaymentReport;
 import db.logindb.model.VatHistory;

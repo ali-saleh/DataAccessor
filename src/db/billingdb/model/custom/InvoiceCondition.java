@@ -5,15 +5,25 @@ import java.sql.Date;
 import db.billingdb.model.custom.interfaces.HasDateLimit;
 
 public class InvoiceCondition extends BaseCondition implements HasDateLimit {
+
+	private int city = 0;
 	private int userId = 0;
 	private int currencyId;
 	private int partnerId;
 	private int salesmanId;
+	private int invoiceState;
 	private Date startDate = null;
 	private Date endDate = null;
 	private double vatRate = 0;
 	private Boolean deleted = false;
-	private int city = 0;
+
+	public int getCity() {
+		return city;
+	}
+
+	public void setCity(int city) {
+		this.city = city;
+	}
 
 	public int getUserId() {
 		return userId;
@@ -47,6 +57,14 @@ public class InvoiceCondition extends BaseCondition implements HasDateLimit {
 		this.salesmanId = salesmanId;
 	}
 
+	public int getInvoiceState() {
+		return invoiceState;
+	}
+
+	public void setInvoiceState(int invoiceState) {
+		this.invoiceState = invoiceState;
+	}
+
 	public Date getStartDate() {
 		return startDate;
 	}
@@ -71,14 +89,6 @@ public class InvoiceCondition extends BaseCondition implements HasDateLimit {
 		this.deleted = deleted;
 	}
 
-	public int getCity() {
-		return city;
-	}
-
-	public void setCity(int city) {
-		this.city = city;
-	}
-
 	public void setVatRate(double rate) {
 		this.vatRate = rate;
 	}
@@ -86,20 +96,21 @@ public class InvoiceCondition extends BaseCondition implements HasDateLimit {
 	public double getVatRate() {
 		return this.vatRate;
 	}
-	
+
 	@Override
 	public InvoiceCondition clone() {
 		InvoiceCondition c = new InvoiceCondition();
+		c.city = city;
 		c.userId = userId;
 		c.currencyId = currencyId;
 		c.partnerId = partnerId;
 		c.salesmanId = salesmanId;
-		c.city = city;
 		c.deleted = deleted;
+		c.invoiceState = invoiceState;
 		c.startDate = startDate;
 		c.endDate = endDate;
 		c.vatRate = vatRate;
-		
+
 		return c;
 	}
 }

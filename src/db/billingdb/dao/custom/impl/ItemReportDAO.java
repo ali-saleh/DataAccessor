@@ -4,12 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
 
-import db.billingdb.DBConnection_Billing;
 import db.billingdb.dao.custom.ItemReportMapper;
-import db.billingdb.model.custom.InvoiceCondition;
-import db.billingdb.model.custom.InvoiceReport;
 import db.billingdb.model.custom.Item;
 import db.billingdb.model.custom.ItemReport;
 import db.billingdb.model.custom.ItemReportCondition;

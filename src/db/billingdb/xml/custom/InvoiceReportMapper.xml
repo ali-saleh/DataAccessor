@@ -26,21 +26,14 @@
 		i.total as total,
 		i.balance as balance,
 		i.carried_balance as c_balance,
-		i.create_datetime as c_date,
+		i.create_datetime
+		as c_date,
 		i.currency_id as currency,
 		g.status_value
 		as i_status,
 		GROUP_CONCAT(pi.payment_id
 		SEPARATOR ',') as paymentString
 	</sql>
-
-	<!-- <sql id="columns_unclosed"> -->
-	<!-- c.user_id as u_id, i.id as i_id, cf.content as disply_name, -->
-	<!-- i.create_datetime -->
-	<!-- as c_time, il.quantity as quantity, -->
-	<!-- il.amount as -->
-	<!-- balance -->
-	<!-- </sql> -->
 
 	<sql id="main_tables">
 		invoice i
@@ -100,6 +93,9 @@
 						<if test="currencyId != 0">
 							AND i.currency_id = #{currencyId,jdbcType=INTEGER}
 						</if>
+						<if test="invoiceState != 0">
+							AND i.state = #{invoiceState,jdbcType=INTEGER}
+						</if>
 						<if test="startDate != null">
 							and i.create_datetime &gt;=
 							#{startDate,jdbcType=TIMESTAMP}
@@ -131,17 +127,20 @@
 		SELECT i.id
 		FROM
 		base_user u
-		join contact c on c.user_id = u.id AND u.deleted = 0
+		join contact c on c.user_id = u.id AND
+		u.deleted = 0
 		<if test="userId != 0">
 			AND c.user_id = #{userId,jdbcType=INTEGER}
 		</if>
 		join invoice i on i.user_id = u.id AND i.is_review = 0
 
 		<if test="partnerId != 0">
-			join contact_field cf on cf.contact_id = c.id AND cf.type_id = 443
+			join contact_field cf on cf.contact_id = c.id AND
+			cf.type_id = 443
 		</if>
 		<if test="salesmanId != 0">
-			join contact_field cf1 on cf1.contact_id = c.id AND cf1.type_id = 444
+			join contact_field cf1 on cf1.contact_id = c.id AND
+			cf1.type_id = 444
 		</if>
 
 		<where>
@@ -154,6 +153,9 @@
 				</if>
 				<if test="currencyId != 0">
 					AND i.currency_id = #{currencyId,jdbcType=INTEGER}
+				</if>
+				<if test="invoiceState != 0">
+					AND i.status_id = #{invoiceState,jdbcType=INTEGER}
 				</if>
 				<if test="startDate != null">
 					and i.create_datetime &gt;=

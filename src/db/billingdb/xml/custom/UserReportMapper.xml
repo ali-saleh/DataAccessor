@@ -28,34 +28,104 @@
 	<resultMap id="CustomerMap" type="db.billingdb.model.custom.Customer"
 		extends="UserInfoMap" />
 
-	<select id="getPartnersListByCity" resultMap="SimpleUserMap"
+	<select id="getAllPartners" resultMap="SimpleUserMap">
+		select
+		urm.user_id
+		'user_id',
+		cf.content 'fullname'
+		from
+		user_role_map urm
+		join contact c on
+		urm.role_id = 4 AND c.user_id = urm.user_id AND
+		c.deleted = 0
+		join
+		contact_field cf on cf.contact_id = c.id AND cf.type_id = 432
+	</select>
+
+	<select id="getPartnersByCity" resultMap="SimpleUserMap"
 		parameterType="int">
 		select
 		urm.user_id 'user_id',
 		cf.content 'fullname'
 		from
 		user_role_map urm
-		join contact c on urm.role_id = 4 AND c.user_id = urm.user_id AND
+		join contact c on urm.role_id = 4 AND c.user_id =
+		urm.user_id AND
 		c.deleted = 0
-<!-- 		<if test="city != 0"> -->
-<!-- 			AND c.city = #{city, jdbcType=INTEGER} -->
-<!-- 		</if> -->
+		AND c.city = #{city, jdbcType=INTEGER}
 		join contact_field cf on cf.contact_id = c.id AND cf.type_id = 432
 	</select>
 
-	<select id="getSalesmenListByCity" resultMap="SimpleUserMap"
+	<select id="getAllSalesmen" resultMap="SimpleUserMap">
+		select
+		urm.user_id
+		'user_id',
+		cf.content 'fullname'
+		from
+		user_role_map urm
+		join contact c on
+		urm.role_id = 9 AND c.user_id = urm.user_id AND
+		c.deleted = 0
+		join
+		contact_field cf on cf.contact_id =
+		c.id AND cf.type_id = 432
+	</select>
+
+	<select id="getSalesmenByCity" resultMap="SimpleUserMap"
 		parameterType="int">
 		select
 		urm.user_id 'user_id',
 		cf.content 'fullname'
 		from
 		user_role_map urm
-		join contact c on urm.role_id = 9 AND c.user_id = urm.user_id AND
+		join contact c on urm.role_id = 9 AND c.user_id =
+		urm.user_id AND
 		c.deleted = 0
-<!-- 		<if test="city != 0"> -->
-<!-- 			AND c.city = #{city, jdbcType=INTEGER} -->
-<!-- 		</if> -->
+		AND c.city = #{city, jdbcType=INTEGER}
 		join contact_field cf on cf.contact_id = c.id AND cf.type_id = 432
+	</select>
+
+	<select id="getAllCustomers" resultMap="CustomerMap">
+		select
+		urm.user_id
+		'user_id',
+		c.city 'city',
+		cf2.content
+		'username',
+		cf1.content 'fullname'
+		from
+		user_role_map urm
+		join contact c
+		on urm.role_id = 5 AND c.user_id =
+		urm.user_id AND
+		c.deleted = false
+		join contact_field cf1 on
+		cf1.contact_id = c.id AND cf1.type_id = 432
+		join contact_field cf2 on
+		cf2.contact_id = c.id AND cf2.type_id = 434
+	</select>
+
+	<select id="getCustomersByCity" resultMap="CustomerMap"
+		parameterType="int">
+		select
+		urm.user_id
+		'user_id',
+		c.city 'city',
+		cf2.content
+		'username',
+		cf1.content 'fullname'
+		from
+		user_role_map urm
+		join contact c
+		on urm.role_id = 5 AND c.user_id =
+		urm.user_id AND
+		c.deleted = false
+		AND
+		c.city = #{city, jdbcType=INTEGER}
+		join contact_field cf1 on
+		cf1.contact_id = c.id AND cf1.type_id = 432
+		join contact_field cf2 on
+		cf2.contact_id = c.id AND cf2.type_id = 434
 	</select>
 
 	<select id="getUserInfoByIDs" resultMap="UserInfoMap">
@@ -120,22 +190,91 @@
 		order by po.active_until desc
 	</select>
 
-	<select id="getAllCustomers" resultMap="CustomerMap">
+	<select id="getUserPayments" resultMap="UserPaymentsMap"
+		parameterType="db.billingdb.model.custom.UserPaymentCondition">
 		select
-		urm.user_id
-		'user_id',
-		c.city 'city',
-		cf2.content 'username',
-		cf1.content 'fullname'
+		c.user_id 'user_id',
+		cf.content 'fullname',
+		cf1.content
+		'username',
+		STR_TO_DATE(cf2.content, '%m/%d/%y') 'install_time',
+		c.city
+		'city',
+		(sum(i.total)
+		<if test="vatRate != 0">
+			* (1.0 - #{vatRate,jdbcType=DOUBLE})
+		</if>
+		) 'balance'
 		from
-		user_role_map urm
-		join contact c on urm.role_id = 5 AND c.user_id =
-		urm.user_id AND
-		c.deleted = false
-		join contact_field cf1 on
-		cf1.contact_id = c.id AND cf1.type_id = 432
-		join contact_field cf2 on
-		cf2.contact_id = c.id AND cf2.type_id = 434
+		contact c
+		join
+		invoice i ON i.user_id = c.user_id
+		AND
+		i.deleted = 0
+		AND
+		i.is_review = 0
+		AND i.status_id = 27
+		<if test="currencyId != 0">
+			AND i.currency_id = #{currencyId,jdbcType=INTEGER}
+		</if>
+		<if test="startDate != null">
+			and i.create_datetime &gt;=
+			#{startDate,jdbcType=TIMESTAMP}
+		</if>
+		<if test="endDate != null">
+			and i.create_datetime &lt;=
+			#{endDate,jdbcType=TIMESTAMP}
+		</if>
+		join
+		contact_field cf ON
+		cf.contact_id = c.id
+		AND cf.type_id = 432
+		join
+		contact_field cf1 ON
+		cf1.contact_id = c.id
+		AND cf1.type_id = 434
+		join
+		contact_field cf2 ON
+		cf2.contact_id = c.id
+		AND cf2.type_id = 436
+		<if test="partnerId != 0">
+			join
+			contact_field cf3 on
+			cf3.contact_id = c.id
+			AND
+			cf3.type_id = 435
+		</if>
+		<if test="salesmanId != 0">
+			join
+			contact_field cf4 on
+			cf4.contact_id = c.id
+			AND
+			cf4.content = 443
+		</if>
+		<if test="city != 0 or partnerId != 0 or salesmanId != 0">
+			<where>
+				<trim prefix="(" suffix=")" prefixOverrides="and">
+					<if test="city != 0">
+						AND c.city = #{city, jdbcType=INTEGER}
+					</if>
+					<if test="partnerId != 0">
+						AND
+						cf3.content = #{partnerId, jdbcType=INTEGER}
+					</if>
+					<if test="salesmanId != 0">
+						AND
+						cf4.content = #{salesmanId, jdbcType=INTEGER}
+					</if>
+				</trim>
+			</where>
+		</if>
+		group by c.user_id
+		order
+		by
+		sum(i.total)
+		<if test="isDescending">
+			desc
+		</if>
 	</select>
 
 	<select id="getOutstandingUsers" resultMap="OutstandingMap"
@@ -271,93 +410,6 @@
 			#{city,jdbcType=INTEGER}
 		</if>
 		where (invoice_balance - payment_balance) > 0;
-	</select>
-
-	<select id="getUserPayments" resultMap="UserPaymentsMap"
-		parameterType="db.billingdb.model.custom.UserPaymentCondition">
-		select
-		c.user_id 'user_id',
-		cf.content 'fullname',
-		cf1.content
-		'username',
-		STR_TO_DATE(cf2.content, '%m/%d/%y') 'install_time',
-		c.city
-		'city',
-		(sum(i.total)
-		<if test="vatRate != 0">
-			* (1.0 - #{vatRate,jdbcType=DOUBLE})
-		</if>
-		) 'balance'
-		from
-		contact c
-		join
-		invoice i ON i.user_id = c.user_id
-		AND
-		i.deleted = 0
-		AND
-		i.is_review = 0
-		AND i.status_id = 27
-		<if test="currencyId != 0">
-			AND i.currency_id = #{currencyId,jdbcType=INTEGER}
-		</if>
-		<if test="startDate != null">
-			and i.create_datetime &gt;=
-			#{startDate,jdbcType=TIMESTAMP}
-		</if>
-		<if test="endDate != null">
-			and i.create_datetime &lt;=
-			#{endDate,jdbcType=TIMESTAMP}
-		</if>
-		join
-		contact_field cf ON
-		cf.contact_id = c.id
-		AND cf.type_id = 432
-		join
-		contact_field cf1 ON
-		cf1.contact_id = c.id
-		AND cf1.type_id = 434
-		join
-		contact_field cf2 ON
-		cf2.contact_id = c.id
-		AND cf2.type_id = 436
-		<if test="partnerId != 0">
-			join
-			contact_field cf3 on
-			cf3.contact_id = c.id
-			AND
-			cf3.type_id = 435
-		</if>
-		<if test="salesmanId != 0">
-			join
-			contact_field cf4 on
-			cf4.contact_id = c.id
-			AND
-			cf4.content = 443
-		</if>
-		<if test="city != 0 or partnerId != 0 or salesmanId != 0">
-			<where>
-				<trim prefix="(" suffix=")" prefixOverrides="and">
-					<if test="city != 0">
-						AND c.city = #{city, jdbcType=INTEGER}
-					</if>
-					<if test="partnerId != 0">
-						AND
-						cf3.content = #{partnerId, jdbcType=INTEGER}
-					</if>
-					<if test="salesmanId != 0">
-						AND
-						cf4.content = #{salesmanId, jdbcType=INTEGER}
-					</if>
-				</trim>
-			</where>
-		</if>
-		group by c.user_id
-		order
-		by
-		sum(i.total)
-		<if test="isDescending">
-			desc
-		</if>
 	</select>
 
 </mapper>

@@ -1,13 +1,10 @@
 package db.billingdb.dao.custom.impl;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
 
-import db.billingdb.DBConnection_Billing;
 import db.billingdb.dao.custom.InvoiceReportMapper;
 import db.billingdb.model.custom.InvoiceCondition;
 import db.billingdb.model.custom.InvoiceReport;

@@ -46,9 +46,9 @@ public class HelloWorld {
 	public static void main(String[] args) {
 
 		// OutstandingUserCondition condition = new OutstandingUserCondition();
-		 UserReportDAO dao = new UserReportDAO();
-		 List<SimpleUser> l = dao.getPartnersListByCity(0);
-		System.out.println();
+		// UserReportDAO dao = new UserReportDAO();
+		// List<SimpleUser> l = dao.getPartnersListByCity(0);
+		// System.out.println();
 		// Map<Integer, OutstandingUser> m = new HashMap<Integer,
 		// OutstandingUser>();
 		// for (OutstandingUser outstandingUser : l) {
@@ -81,8 +81,12 @@ public class HelloWorld {
 		// condition.setCity(1);
 		// condition.setCurrencyId(12);
 		// condition.setDeleted(false);
+		// condition.setInvoiceState(27);
 		// condition.setStartDate(Date.valueOf("2012-3-1"));
 		// condition.setEndDate(Date.valueOf("2012-4-30"));
+		//
+		// List<Integer> lis = dao.getInvoicesIDs(condition);
+		// System.out.println(lis.size());
 
 		// List<Integer> x = new ArrayList<Integer>();
 		// x.add(8583);
@@ -90,9 +94,6 @@ public class HelloWorld {
 		// x.add(18636);
 		// x.add(18637);
 		// x.add(18638);
-		//
-		// List<Integer> lis = dao.getInvoicesIDs(condition);
-		// System.out.println(lis.size());
 
 		// List<InvoiceReport> l =
 		// dao.getInvoicesByIDs(dao.getInvoicesIDs(condition));
@@ -129,14 +130,14 @@ public class HelloWorld {
 		// // InvoiceReportDAO dao = new InvoiceReportDAO();
 		// // List<InvoiceReport> l = dao.getInvoicesByCondition(c);
 		//
-		// // ItemReportDAO dao = new ItemReportDAO();
-		// //
-		// // List<ItemReport> l = dao.report();
-		//
-		// // if (l.size() < 0) {
-		// // System.out.println("err");
-		// // }
-		// // System.out.println(l.size());
+		ItemReportDAO dao = new ItemReportDAO();
+
+		List<Item> l = dao.listItems();
+
+		if (l.size() < 0) {
+			System.out.println("err");
+		}
+		System.out.println(l.size());
 		//
 		// PaymentCondition condition = new PaymentCondition();
 		// condition.setDeleted(false);
@@ -153,20 +154,21 @@ public class HelloWorld {
 		// TestClass t = new TestClass();
 		// t.run_test();
 
-//		ItemReportDAO dao = new ItemReportDAO();
-//		UserTypeCondition condition = new UserTypeCondition();
-//		List<UserTypeReport> l = dao.getUserTypeReport(null);
-//		
-//		try {
-//			Map<Integer, CombinedUserTypeReport> m = extractUserTypeReport(l);
-//			System.out.println(m.size());
-//		} catch (Exception e) {
-//			
-//			e.printStackTrace();
-//		}
+		// ItemReportDAO dao = new ItemReportDAO();
+		// UserTypeCondition condition = new UserTypeCondition();
+		// List<UserTypeReport> l = dao.getUserTypeReport(null);
+		//
+		// try {
+		// Map<Integer, CombinedUserTypeReport> m = extractUserTypeReport(l);
+		// System.out.println(m.size());
+		// } catch (Exception e) {
+		//
+		// e.printStackTrace();
+		// }
 	}
 
-	private static Map<Integer, CombinedUserTypeReport> extractUserTypeReport(List<UserTypeReport> reportList) throws Exception{
+	private static Map<Integer, CombinedUserTypeReport> extractUserTypeReport(
+			List<UserTypeReport> reportList) throws Exception {
 		if (reportList == null || reportList.size() <= 0) {
 			return null;
 		}
@@ -183,13 +185,16 @@ public class HelloWorld {
 
 			switch (userTypeReport.getUserType()) {
 			case 0:
-				map.get(userTypeReport.getItemId()).setNormalUserCount(userTypeReport.getCount());
+				map.get(userTypeReport.getItemId()).setNormalUserCount(
+						userTypeReport.getCount());
 				break;
 			case 1:
-				map.get(userTypeReport.getItemId()).setCompanyCount(userTypeReport.getCount());
+				map.get(userTypeReport.getItemId()).setCompanyCount(
+						userTypeReport.getCount());
 				break;
 			default:
-				throw new Exception("Unknown user type found for item " + userTypeReport.getItemId());
+				throw new Exception("Unknown user type found for item "
+						+ userTypeReport.getItemId());
 			}
 		}
 		return map;

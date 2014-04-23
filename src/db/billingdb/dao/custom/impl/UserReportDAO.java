@@ -3,7 +3,6 @@ package db.billingdb.dao.custom.impl;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
@@ -18,13 +17,30 @@ import db.billingdb.model.custom.info.UserInfo;
 public class UserReportDAO extends BaseDAO implements UserReportMapper {
 
 	@Override
-	public List<SimpleUser> getSalesmenListByCity(int city) {
+	public List<SimpleUser> getAllSalesmen() {
 		SqlSession openSession = _session.openSession();
 		List<SimpleUser> res = null;
 		try {
 			UserReportMapper map = openSession
 					.getMapper(UserReportMapper.class);
-			res = map.getSalesmenListByCity(city);
+			res = map.getAllSalesmen();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			openSession.close();
+		}
+		return res;
+	}
+	
+
+	@Override
+	public List<SimpleUser> getSalesmenByCity(int city) {
+		SqlSession openSession = _session.openSession();
+		List<SimpleUser> res = null;
+		try {
+			UserReportMapper map = openSession
+					.getMapper(UserReportMapper.class);
+			res = map.getSalesmenByCity(city);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -34,13 +50,13 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 	}
 
 	@Override
-	public List<SimpleUser> getPartnersListByCity(int city) {
+	public List<SimpleUser> getAllPartners() {
 		SqlSession openSession = _session.openSession();
 		List<SimpleUser> res = null;
 		try {
 			UserReportMapper map = openSession
 					.getMapper(UserReportMapper.class);
-			res = map.getPartnersListByCity(city);
+			res = map.getAllPartners();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -48,16 +64,16 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 		}
 		return res;
 	}
+	
 
 	@Override
-	public List<OutstandingUser> getUsersByName(String name, int city) {
-
+	public List<SimpleUser> getPartnersByCity(int city) {
 		SqlSession openSession = _session.openSession();
-		List<OutstandingUser> res = null;
+		List<SimpleUser> res = null;
 		try {
 			UserReportMapper map = openSession
 					.getMapper(UserReportMapper.class);
-			res = map.getUsersByName(name, city);
+			res = map.getPartnersByCity(city);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -68,7 +84,6 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 
 	@Override
 	public List<Customer> getAllCustomers() {
-
 		SqlSession openSession = _session.openSession();
 		List<Customer> res = null;
 		try {
@@ -82,23 +97,16 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 		}
 		return res;
 	}
+	
 
 	@Override
-	public List<UserInfo> getActiveUsers(Date date) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<OutstandingUser> getOutstandingUsers(
-			OutstandingUserCondition condition) {
-
+	public List<Customer> getCustomersByCity(int city) {
 		SqlSession openSession = _session.openSession();
-		List<OutstandingUser> res = null;
+		List<Customer> res = null;
 		try {
 			UserReportMapper map = openSession
 					.getMapper(UserReportMapper.class);
-			res = map.getOutstandingUsers(condition);
+			res = map.getCustomersByCity(city);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -128,18 +136,41 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 	}
 
 	@Override
+	public List<OutstandingUser> getUsersByName(String name, int city) {
+
+		SqlSession openSession = _session.openSession();
+		List<OutstandingUser> res = null;
+		try {
+			UserReportMapper map = openSession
+					.getMapper(UserReportMapper.class);
+			res = map.getUsersByName(name, city);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			openSession.close();
+		}
+		return res;
+	}
+
+	@Override
+	public List<UserInfo> getActiveUsers(Date date) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public UserInfo getUserInfoByID(int userID) {
 		List<Integer> lst = new ArrayList<Integer>();
-		
+
 		lst.add(userID);
-		
+
 		List<UserInfo> infos = this.getUserInfoByIDs(lst);
-		
-		if(infos == null || infos.size() < 1) {
-			// Some error 
+
+		if (infos == null || infos.size() < 1) {
+			// Some error
 			return null;
 		}
-		
+
 		// Always returning first element. (There shouldn't be more)
 		return infos.get(0);
 	}
@@ -152,6 +183,24 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 			UserReportMapper map = openSession
 					.getMapper(UserReportMapper.class);
 			res = map.getUserPayments(condition);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			openSession.close();
+		}
+		return res;
+	}
+
+	@Override
+	public List<OutstandingUser> getOutstandingUsers(
+			OutstandingUserCondition condition) {
+
+		SqlSession openSession = _session.openSession();
+		List<OutstandingUser> res = null;
+		try {
+			UserReportMapper map = openSession
+					.getMapper(UserReportMapper.class);
+			res = map.getOutstandingUsers(condition);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
