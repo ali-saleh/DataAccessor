@@ -10,10 +10,10 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import db.billingdb.DBConnection_Billing;
 import db.billingdb.model.custom.interfaces.HasDateLimit;
-import db.logindb.DBConnection_Login;
-import db.logindb.dao.VatHistoryMapper;
-import db.logindb.model.VatHistory;
-import db.logindb.model.VatHistoryExample;
+import db.reportingdb.DBConnection_Reporting;
+import db.reportingdb.dao.VatHistoryMapper;
+import db.reportingdb.model.VatHistory;
+import db.reportingdb.model.VatHistoryExample;
 
 /*
  * Base Database Access Object for all report classes
@@ -21,7 +21,7 @@ import db.logindb.model.VatHistoryExample;
 public class BaseDAO {
 
 	protected SqlSessionFactory _session;
-	static private List<VatHistory> allVatRecords;
+	private static List<VatHistory> allVatRecords;
 
 	/*
 	 * Static Initializer that retrieves all VAT records
@@ -104,7 +104,7 @@ public class BaseDAO {
 	}
 
 	private static void getVatRecords() {
-		SqlSession openSession = DBConnection_Login.getSession().openSession();
+		SqlSession openSession = DBConnection_Reporting.getSession().openSession();
 		try {
 			VatHistoryMapper map = openSession
 					.getMapper(VatHistoryMapper.class);

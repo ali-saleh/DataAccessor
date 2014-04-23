@@ -11,7 +11,7 @@ import db.billingdb.model.custom.ItemReport;
 import db.billingdb.model.custom.ItemReportCondition;
 import db.billingdb.model.custom.UserTypeCondition;
 import db.billingdb.model.custom.UserTypeReport;
-import db.logindb.model.VatHistory;
+import db.reportingdb.model.VatHistory;
 
 public class ItemReportDAO extends BaseDAO implements ItemReportMapper {
 

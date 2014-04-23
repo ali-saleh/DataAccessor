@@ -8,7 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import db.billingdb.dao.custom.PaymentReportMapper;
 import db.billingdb.model.custom.PaymentCondition;
 import db.billingdb.model.custom.PaymentReport;
-import db.logindb.model.VatHistory;
+import db.reportingdb.model.VatHistory;
 
 public class PaymentReportDAO extends BaseDAO implements PaymentReportMapper{
 

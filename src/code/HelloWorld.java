@@ -18,6 +18,8 @@ import java.util.Scanner;
 
 import javax.swing.filechooser.FileSystemView;
 
+import utils.UserEncryptionMngr;
+
 import db.billingdb.dao.custom.impl.InvoiceReportDAO;
 import db.billingdb.dao.custom.impl.ItemReportDAO;
 import db.billingdb.dao.custom.impl.PaymentReportDAO;
@@ -37,6 +39,9 @@ import db.billingdb.model.custom.UserPaymentCondition;
 import db.billingdb.model.custom.UserTypeCondition;
 import db.billingdb.model.custom.UserTypeReport;
 import db.billingdb.model.custom.info.UserInfo;
+import db.reportingdb.ReportingDBException;
+import db.reportingdb.dao.impl.ReportingUserDAO;
+import db.reportingdb.model.User;
 
 public class HelloWorld {
 
@@ -44,6 +49,15 @@ public class HelloWorld {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+
+		ReportingUserDAO dao = new ReportingUserDAO();
+
+		try {
+			dao.authenticateUser("manager1", "123456");
+		} catch (ReportingDBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// OutstandingUserCondition condition = new OutstandingUserCondition();
 		// UserReportDAO dao = new UserReportDAO();
@@ -130,14 +144,14 @@ public class HelloWorld {
 		// // InvoiceReportDAO dao = new InvoiceReportDAO();
 		// // List<InvoiceReport> l = dao.getInvoicesByCondition(c);
 		//
-		ItemReportDAO dao = new ItemReportDAO();
-
-		List<Item> l = dao.listItems();
-
-		if (l.size() < 0) {
-			System.out.println("err");
-		}
-		System.out.println(l.size());
+		// ItemReportDAO dao = new ItemReportDAO();
+		//
+		// List<Item> l = dao.listItems();
+		//
+		// if (l.size() < 0) {
+		// System.out.println("err");
+		// }
+		// System.out.println(l.size());
 		//
 		// PaymentCondition condition = new PaymentCondition();
 		// condition.setDeleted(false);
@@ -167,8 +181,7 @@ public class HelloWorld {
 		// }
 	}
 
-	private static Map<Integer, CombinedUserTypeReport> extractUserTypeReport(
-			List<UserTypeReport> reportList) throws Exception {
+	private static Map<Integer, CombinedUserTypeReport> extractUserTypeReport(List<UserTypeReport> reportList) throws Exception {
 		if (reportList == null || reportList.size() <= 0) {
 			return null;
 		}
@@ -185,16 +198,13 @@ public class HelloWorld {
 
 			switch (userTypeReport.getUserType()) {
 			case 0:
-				map.get(userTypeReport.getItemId()).setNormalUserCount(
-						userTypeReport.getCount());
+				map.get(userTypeReport.getItemId()).setNormalUserCount(userTypeReport.getCount());
 				break;
 			case 1:
-				map.get(userTypeReport.getItemId()).setCompanyCount(
-						userTypeReport.getCount());
+				map.get(userTypeReport.getItemId()).setCompanyCount(userTypeReport.getCount());
 				break;
 			default:
-				throw new Exception("Unknown user type found for item "
-						+ userTypeReport.getItemId());
+				throw new Exception("Unknown user type found for item " + userTypeReport.getItemId());
 			}
 		}
 		return map;
