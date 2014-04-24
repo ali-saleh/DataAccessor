@@ -6,6 +6,7 @@ public class UserInfo {
 	private int id;
 	private String username;
 	private String fullname;
+	private int currencyId;
 	private Date installationDate;
 	private String city;
 
@@ -31,6 +32,14 @@ public class UserInfo {
 
 	public void setFullname(String fullname) {
 		this.fullname = fullname;
+	}
+
+	public int getCurrencyId() {
+		return currencyId;
+	}
+
+	public void setCurrencyId(int currencyId) {
+		this.currencyId = currencyId;
 	}
 
 	public Date getInstallationDate() {

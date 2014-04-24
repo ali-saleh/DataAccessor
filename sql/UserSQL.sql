@@ -2,10 +2,12 @@
     c.user_id 'user_id',
     cf.content 'fullname',
     cf1.content 'username',
+	b.currency_id 'currency',
 	c.city 'city',
     sum(i.total) 'payments'
 from
-    contact c
+	base_user b
+    join contact c on c.user_id = b.id
         join
     invoice i ON i.user_id = c.user_id AND i.deleted = 0
         AND i.is_review = 0

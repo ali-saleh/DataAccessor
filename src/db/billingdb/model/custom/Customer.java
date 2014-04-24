@@ -3,6 +3,7 @@ package db.billingdb.model.custom;
 public class Customer {
 	private int id;
 	private String city;
+	private int currencyId;
 	private String username;
 	private String fullname;
 
@@ -22,6 +23,14 @@ public class Customer {
 		this.city = city;
 	}
 
+	public int getCurrencyId() {
+		return currencyId;
+	}
+
+	public void setCurrencyId(int currencyId) {
+		this.currencyId = currencyId;
+	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -39,7 +48,8 @@ public class Customer {
 	}
 
 	public String getCombinedName() {
-		if (username != null && !username.isEmpty() && fullname != null && !fullname.isEmpty()) {
+		if (username != null && !username.isEmpty() && fullname != null
+				&& !fullname.isEmpty()) {
 			return String.format("%12s - %s", username, fullname);
 		}
 

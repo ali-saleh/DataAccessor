@@ -8,6 +8,7 @@
 
 	<resultMap id="UserInfoMap" type="db.billingdb.model.custom.info.UserInfo"
 		extends="SimpleUserMap">
+		<result column="currency" property="currencyId" jdbcType="INTEGER" />
 		<result column="city" property="city" jdbcType="INTEGER" />
 		<result column="install_time" property="installationDate"
 			jdbcType="TIMESTAMP" />
@@ -92,11 +93,19 @@
 		c.city 'city',
 		cf2.content
 		'username',
+		b.currency_id
+		'currency',
 		cf1.content 'fullname'
 		from
+		base_user b
+		join
 		user_role_map urm
-		join contact c
-		on urm.role_id = 5 AND c.user_id =
+		on
+		urm.user_id = b.id AND urm.role_id = 5
+		join
+		contact c
+		on c.user_id
+		=
 		urm.user_id AND
 		c.deleted = false
 		join contact_field cf1 on
@@ -113,19 +122,28 @@
 		c.city 'city',
 		cf2.content
 		'username',
+		b.currency_id 'currency',
 		cf1.content 'fullname'
 		from
-		user_role_map urm
-		join contact c
-		on urm.role_id = 5 AND c.user_id =
-		urm.user_id AND
+		base_user b
+		join
+		user_role_map urm on
+		urm.user_id = b.id AND urm.role_id
+		= 5
+		join
+		contact c
+		on c.user_id
+		= urm.user_id AND
 		c.deleted = false
 		AND
-		c.city = #{city, jdbcType=INTEGER}
+		c.city = #{city,
+		jdbcType=INTEGER}
 		join contact_field cf1 on
-		cf1.contact_id = c.id AND cf1.type_id = 432
+		cf1.contact_id = c.id AND
+		cf1.type_id = 432
 		join contact_field cf2 on
-		cf2.contact_id = c.id AND cf2.type_id = 434
+		cf2.contact_id = c.id AND
+		cf2.type_id = 434
 	</select>
 
 	<select id="getUserInfoByIDs" resultMap="UserInfoMap">
@@ -133,11 +151,16 @@
 		cf.content 'fullname',
 		cf1.content
 		'username',
-		STR_TO_DATE(cf2.content, '%m/%d/%y') 'install_time',
+		b.currency_id 'currency',
+		if(cf2.content = "", null,
+		STR_TO_DATE(cf2.content,
+		'%m/%d/%y')) 'install_time',
 		c.city
 		'city'
 		from
-		contact c
+		base_user b
+		join contact c
+		on c.user_id = b.id
 		join
 		contact_field cf on
 		cf.contact_id = c.id and
@@ -197,7 +220,9 @@
 		cf.content 'fullname',
 		cf1.content
 		'username',
-		STR_TO_DATE(cf2.content, '%m/%d/%y') 'install_time',
+		b.currency_id 'currency',
+		if(cf2.content = "", null, STR_TO_DATE(cf2.content,
+		'%m/%d/%y')) 'install_time',
 		c.city
 		'city',
 		(sum(i.total)
@@ -206,9 +231,12 @@
 		</if>
 		) 'balance'
 		from
-		contact c
+		base_user b
+		join contact c
+		on c.user_id = b.id
 		join
-		invoice i ON i.user_id = c.user_id
+		invoice i ON i.user_id =
+		c.user_id
 		AND
 		i.deleted = 0
 		AND

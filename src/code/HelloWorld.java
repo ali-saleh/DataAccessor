@@ -50,14 +50,14 @@ public class HelloWorld {
 	 */
 	public static void main(String[] args) {
 
-		ReportingUserDAO dao = new ReportingUserDAO();
-
-		try {
-			dao.authenticateUser("manager1", "123456");
-		} catch (ReportingDBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		ReportingUserDAO dao = new ReportingUserDAO();
+//
+//		try {
+//			dao.authenticateUser("manager1", "123456");
+//		} catch (ReportingDBException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 		// OutstandingUserCondition condition = new OutstandingUserCondition();
 		// UserReportDAO dao = new UserReportDAO();
@@ -82,9 +82,14 @@ public class HelloWorld {
 		// System.out.println(String.format("%-12s-test", "Hiell"));
 		// \
 
-		// UserReportDAO dao = new UserReportDAO();
-		//
-		// UserPaymentCondition condition = new UserPaymentCondition();
+		UserReportDAO dao = new UserReportDAO();
+		UserPaymentCondition condition = new UserPaymentCondition();
+		
+		List<Customer> l1 = dao.getAllCustomers();
+		List<OutstandingUser> l2 = dao.getUserPayments(condition);
+		
+		UserInfo info = dao.getUserInfoByID(30); 
+		
 		// condition.setPartnerId(2160);
 		// List<OutstandingUser> x = dao.getUserPayments(condition);
 		//
