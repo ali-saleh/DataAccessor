@@ -32,11 +32,18 @@ from
             from
                 invoice inv
             where
-                inv.create_datetime >= '2012-3-1'
+                inv.user_id in (select 
+                        con.user_id
+                    from
+                        contact con
+					join contact_field cf on cf.contact_id = con.id and cf.type_id = 435
+                    where
+                        con.city <> 0
+					and cf.content = 2160)
+                    and inv.create_datetime >= '2012-3-1'
                     and inv.create_datetime < '2012-4-30'
                     and inv.currency_id = 12
-
-                    and inv.deleted = 1
+                    and inv.deleted = 0
                     and inv.is_review = 0)
     group by i_0.invoice_id , i_0.item_id) rpt
 group by rpt.item_id;

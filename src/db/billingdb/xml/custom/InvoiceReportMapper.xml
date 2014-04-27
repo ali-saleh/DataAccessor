@@ -136,11 +136,11 @@
 
 		<if test="partnerId != 0">
 			join contact_field cf on cf.contact_id = c.id AND
-			cf.type_id = 443
+			cf.type_id = 435
 		</if>
 		<if test="salesmanId != 0">
 			join contact_field cf1 on cf1.contact_id = c.id AND
-			cf1.type_id = 444
+			cf1.type_id = 443
 		</if>
 
 		<where>

@@ -8,14 +8,16 @@ import db.billingdb.model.custom.interfaces.HasDateLimit;
 
 public class ItemReportCondition extends BaseCondition implements HasDateLimit {
 	private List<Integer> itemIds;
-	private int userId = 0;
+	private int userId;
+	private int partnerId;
+	private int salesmanId;
 	private Date startDate = null;
 	private Date endDate = null;
 	private double vatRate = 0;
 	private Boolean deleted = false;
 	private int currencyId = 12; // Referring to Shekel
 	private int city = 0;
-	
+
 	public List<Integer> getItemIds() {
 		return itemIds;
 	}
@@ -30,6 +32,22 @@ public class ItemReportCondition extends BaseCondition implements HasDateLimit {
 
 	public void setUserId(int userId) {
 		this.userId = userId;
+	}
+
+	public int getPartnerId() {
+		return partnerId;
+	}
+
+	public void setPartnerId(int partnerId) {
+		this.partnerId = partnerId;
+	}
+
+	public int getSalesmanId() {
+		return salesmanId;
+	}
+
+	public void setSalesmanId(int salesmanId) {
+		this.salesmanId = salesmanId;
 	}
 
 	public Date getStartDate() {
@@ -79,7 +97,7 @@ public class ItemReportCondition extends BaseCondition implements HasDateLimit {
 	public void setCity(int city) {
 		this.city = city;
 	}
-	
+
 	@Override
 	public ItemReportCondition clone() {
 		ItemReportCondition c = new ItemReportCondition();
@@ -87,14 +105,16 @@ public class ItemReportCondition extends BaseCondition implements HasDateLimit {
 		c.currencyId = currencyId;
 		c.deleted = deleted;
 		c.itemIds = new ArrayList<Integer>();
-		for(Integer i: itemIds) {
+		for (Integer i : itemIds) {
 			c.itemIds.add(i);
 		}
 		c.userId = userId;
+		c.partnerId = partnerId;
+		c.salesmanId = salesmanId;
 		c.startDate = startDate;
 		c.endDate = endDate;
 		c.vatRate = vatRate;
-		
+
 		return c;
 	}
 }

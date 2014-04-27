@@ -133,13 +133,34 @@
 					AND inv.user_id = #{userId,jdbcType=INTEGER}
 				</when>
 				<otherwise>
-					<if test="city != 0">
+					<if test="city != 0 or partnerId != 0 or salesmanId != 0">
 						AND inv.user_id in (SELECT
 						con.user_id
 						FROM
 						contact con
-						WHERE
-						con.city = #{city,jdbcType=INTEGER})
+						<if test="partnerId != 0">
+							join contact_field cf on cf.contact_id = con.id and cf.type_id = 435
+						</if>
+						<if test="salesmanId != 0">
+							join contact_field cf1 on cf1.contact_id = con.id and cf1.type_id =
+							443
+						</if>
+						<where>
+							<trim prefix="(" suffix=")" prefixOverrides="AND">
+								<if test="city != 0">
+									AND con.city =
+									#{city,jdbcType=INTEGER})
+								</if>
+								<if test="partnerId != 0">
+									AND cf.content =
+									#{partnerId,jdbcType=INTEGER})
+								</if>
+								<if test="salesmanId != 0">
+									AND cf1.content =
+									#{salesmanId,jdbcType=INTEGER})
+								</if>
+							</trim>
+						</where>
 					</if>
 				</otherwise>
 			</choose>
