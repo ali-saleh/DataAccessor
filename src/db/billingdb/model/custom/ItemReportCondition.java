@@ -104,9 +104,11 @@ public class ItemReportCondition extends BaseCondition implements HasDateLimit {
 		c.city = city;
 		c.currencyId = currencyId;
 		c.deleted = deleted;
-		c.itemIds = new ArrayList<Integer>();
-		for (Integer i : itemIds) {
-			c.itemIds.add(i);
+		if (this.itemIds != null) {
+			c.itemIds = new ArrayList<Integer>();
+			for (Integer i : itemIds) {
+				c.itemIds.add(i);
+			}
 		}
 		c.userId = userId;
 		c.partnerId = partnerId;

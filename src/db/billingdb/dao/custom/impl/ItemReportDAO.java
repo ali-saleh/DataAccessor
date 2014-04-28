@@ -50,19 +50,30 @@ public class ItemReportDAO extends BaseDAO implements ItemReportMapper {
 					list = new ArrayList<ItemReport>();
 					ItemReportCondition c = condition.clone();
 
-					c.setStartDate(getMin(c.getStartDate(), parts.get(0).getStart_date()));
+					// Handling first search 
+					// (should same start time of input condition)
+					c.setStartDate(condition.getStartDate());
 					c.setEndDate(parts.get(0).getEnd_date());
 					c.setVatRate(parts.get(0).getVAT_Value());
-
+					list.addAll(map.getItemReport(c));
+					
+					// Should handle all internal cases 
+					// (Not first not last)
 					int count = 1;
-
-					do {
-						list.addAll(map.getItemReport(c));
+					while (count < parts.size() - 1) {
 						c.setStartDate(parts.get(count).getStart_date());
-						c.setEndDate(getMax(condition.getEndDate(), parts.get(count).getEnd_date()));
+						c.setEndDate(parts.get(count).getEnd_date());
 						c.setVatRate(parts.get(count).getVAT_Value());
+						list.addAll(map.getItemReport(c));
 						count++;
-					} while (count < parts.size());
+					}
+					
+					// Handling last case 
+					// (should set end date to same input end time)
+					c.setStartDate(parts.get(count).getStart_date());
+					c.setEndDate(condition.getEndDate());
+					c.setVatRate(parts.get(count).getVAT_Value());
+					list.addAll(map.getItemReport(c));
 				}
 			} else { // If no vat calculation was needed
 				list = map.getItemReport(condition);
