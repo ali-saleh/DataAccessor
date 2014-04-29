@@ -6,13 +6,19 @@ group by x
 select * from radius.radcheck rad where rad.Attribute = 'Expiration'
 and  STR_TO_DATE(rad.value, '%d %b %Y') >="2015-1-1";
 
-select * from radius.radcheck rad where rad.Attribute = 'Expiration'
-and rad.value like '%2015%';
 
-select * from radius.radcheck rad where rad.Attribute = 'Expiration'
-and rad.value like '%2020%';
 
-select * from radius.radcheck rad where rad.Attribute = 'Expiration'
-and rad.value like '%2023%';
+select 
+    c.PID, c.CustomerName, rug.groupname, rc.value, 
+	STR_TO_DATE(rc.value, '%d %b %Y')
+from
+    radius.customer c
+        join
+    radius.radusergroup rug ON rug.username = c.PID
+        join
+    radius.radcheck rc ON rc.username = c.PID
+        and rc.attribute = 'Expiration'
 
+	where c.status = 'active'
+and STR_TO_DATE(rc.value, '%d %b %Y') > "2013-12-31"
 

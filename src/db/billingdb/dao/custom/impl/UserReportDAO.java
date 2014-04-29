@@ -31,7 +31,6 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 		}
 		return res;
 	}
-	
 
 	@Override
 	public List<SimpleUser> getSalesmenByCity(int city) {
@@ -64,7 +63,6 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 		}
 		return res;
 	}
-	
 
 	@Override
 	public List<SimpleUser> getPartnersByCity(int city) {
@@ -97,7 +95,6 @@ public class UserReportDAO extends BaseDAO implements UserReportMapper {
 		}
 		return res;
 	}
-	
 
 	@Override
 	public List<Customer> getCustomersByCity(int city) {

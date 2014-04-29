@@ -86,7 +86,6 @@ public class ItemReportDAO extends BaseDAO implements ItemReportMapper {
 		return list;
 	}
 
-	
 	@Override
 	public List<UserTypeReport> getUserTypeReport(UserTypeCondition condition) {
 		SqlSession openSession = _session.openSession();
