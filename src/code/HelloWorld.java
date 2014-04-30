@@ -19,7 +19,6 @@ import java.util.Scanner;
 import javax.swing.filechooser.FileSystemView;
 
 import utils.UserEncryptionMngr;
-
 import db.billingdb.dao.custom.impl.InvoiceReportDAO;
 import db.billingdb.dao.custom.impl.ItemReportDAO;
 import db.billingdb.dao.custom.impl.PaymentReportDAO;
@@ -39,6 +38,7 @@ import db.billingdb.model.custom.UserPaymentCondition;
 import db.billingdb.model.custom.UserTypeCondition;
 import db.billingdb.model.custom.UserTypeReport;
 import db.billingdb.model.custom.info.UserInfo;
+import db.radiusdb.BillingConvertUtils;
 import db.reportingdb.ReportingDBException;
 import db.reportingdb.dao.impl.ReportingUserDAO;
 import db.reportingdb.model.User;
@@ -49,15 +49,19 @@ public class HelloWorld {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
-//		ReportingUserDAO dao = new ReportingUserDAO();
-//
-//		try {
-//			dao.authenticateUser("manager1", "123456");
-//		} catch (ReportingDBException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		
+		System.out.println(BillingConvertUtils.getCityId("Ramallah"));
+		
+		System.out.println(BillingConvertUtils.getCityString("1"));
+		
+		// ReportingUserDAO dao = new ReportingUserDAO();
+		//
+		// try {
+		// dao.authenticateUser("manager1", "123456");
+		// } catch (ReportingDBException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 
 		// OutstandingUserCondition condition = new OutstandingUserCondition();
 		// UserReportDAO dao = new UserReportDAO();
@@ -82,14 +86,14 @@ public class HelloWorld {
 		// System.out.println(String.format("%-12s-test", "Hiell"));
 		// \
 
-		UserReportDAO dao = new UserReportDAO();
-		UserPaymentCondition condition = new UserPaymentCondition();
-		
-		List<Customer> l1 = dao.getAllCustomers();
-		List<OutstandingUser> l2 = dao.getUserPayments(condition);
-		
-		UserInfo info = dao.getUserInfoByID(30); 
-		
+		// UserReportDAO dao = new UserReportDAO();
+		// UserPaymentCondition condition = new UserPaymentCondition();
+		//
+		// List<Customer> l1 = dao.getAllCustomers();
+		// List<OutstandingUser> l2 = dao.getUserPayments(condition);
+		//
+		// UserInfo info = dao.getUserInfoByID(30);
+
 		// condition.setPartnerId(2160);
 		// List<OutstandingUser> x = dao.getUserPayments(condition);
 		//
@@ -173,20 +177,21 @@ public class HelloWorld {
 		// TestClass t = new TestClass();
 		// t.run_test();
 
-//		ItemReportDAO dao = new ItemReportDAO();
-//		UserTypeCondition condition = new UserTypeCondition();
-//		List<UserTypeReport> l = dao.getUserTypeReport(null);
-//
-//		try {
-//			Map<Integer, CombinedUserTypeReport> m = extractUserTypeReport(l);
-//			System.out.println(m.size());
-//		} catch (Exception e) {
-//
-//			e.printStackTrace();
-//		}
+		// ItemReportDAO dao = new ItemReportDAO();
+		// UserTypeCondition condition = new UserTypeCondition();
+		// List<UserTypeReport> l = dao.getUserTypeReport(null);
+		//
+		// try {
+		// Map<Integer, CombinedUserTypeReport> m = extractUserTypeReport(l);
+		// System.out.println(m.size());
+		// } catch (Exception e) {
+		//
+		// e.printStackTrace();
+		// }
 	}
 
-	private static Map<Integer, CombinedUserTypeReport> extractUserTypeReport(List<UserTypeReport> reportList) throws Exception {
+	private static Map<Integer, CombinedUserTypeReport> extractUserTypeReport(
+			List<UserTypeReport> reportList) throws Exception {
 		if (reportList == null || reportList.size() <= 0) {
 			return null;
 		}
@@ -203,13 +208,16 @@ public class HelloWorld {
 
 			switch (userTypeReport.getUserType()) {
 			case 0:
-				map.get(userTypeReport.getItemId()).setNormalUserCount(userTypeReport.getCount());
+				map.get(userTypeReport.getItemId()).setNormalUserCount(
+						userTypeReport.getCount());
 				break;
 			case 1:
-				map.get(userTypeReport.getItemId()).setCompanyCount(userTypeReport.getCount());
+				map.get(userTypeReport.getItemId()).setCompanyCount(
+						userTypeReport.getCount());
 				break;
 			default:
-				throw new Exception("Unknown user type found for item " + userTypeReport.getItemId());
+				throw new Exception("Unknown user type found for item "
+						+ userTypeReport.getItemId());
 			}
 		}
 		return map;
